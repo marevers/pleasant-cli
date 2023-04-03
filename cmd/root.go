@@ -25,10 +25,14 @@ import (
 
 var cfgFile string
 
+// Pleasant-CLI version
+var version = "v0.0.1"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "pleasant-cli",
-	Short: "A simple CLI to interact with Pleasant Password Server.",
+	Use:     "pleasant-cli",
+	Version: version,
+	Short:   "A simple CLI to interact with Pleasant Password Server.",
 	Long: `pleasant-cli is an easy to use CLI that uses the Pleasant Password Server
 API to interact with a Pleasant Password Server instance.
 
