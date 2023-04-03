@@ -12,15 +12,15 @@ TO DO
 
 First, you need to set the server URL for the CLI to connect to.
 
-```bash
+```
 pleasant-cli config serverurl <SERVER URL>
 ```
 
-The server URL will be saved to the configuration file (default: $HOME/.pleasant-cli.yaml). If you want to use a different config path, you can add the flag `--config <PATH>` to any command.
+The server URL will be saved to the configuration file (default: `$HOME/.pleasant-cli.yaml`). If you want to use a different config path, you can add the flag `--config <PATH>` to any command.
 
 Next, log into the Pleasant Password Server:
 
-```bash
+```
 pleasant-cli login
 ```
 
@@ -36,7 +36,7 @@ This will retrieve an access token and save it to the configuration file for sub
 
 In order to view all available commands, run the CLI without any arguments.
 
-```bash
+```
 $ pleasant-cli
 
 pleasant-cli is an easy to use CLI that uses the Pleasant Password Server
