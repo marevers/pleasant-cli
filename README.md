@@ -69,3 +69,5 @@ Use "pleasant-cli [command] --help" for more information about a command.
 ```
 
 ## License
+
+Pleasant CLI is released under the Apache 2.0 license. See [LICENSE.txt](https://github.com/marevers/pleasant-cli/blob/master/LICENSE.txt)
