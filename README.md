@@ -75,7 +75,7 @@ Use "pleasant-cli [command] --help" for more information about a command.
 To view information on (sub)commands, append `--help` to any command.
 
 ```
-$ pleasant-cli create entry --help
+$ pleasant-cli login --help
 
 Log into Pleasant Password Server with username and password.
 Username and password can either be entered interactively or by using flags.
