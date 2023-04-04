@@ -32,7 +32,7 @@ var getRootfolderCmd = &cobra.Command{
 Example:
 pleasant-cli get rootfolder`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
 		}
 

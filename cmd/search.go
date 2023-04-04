@@ -32,7 +32,7 @@ var searchCmd = &cobra.Command{
 Example:
 pleasant-cli search --query 'MyTestEntry'`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
 		}
 

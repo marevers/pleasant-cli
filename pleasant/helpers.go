@@ -28,16 +28,20 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
 )
 
-func CheckPrerequisites(checks ...func() (string, bool)) bool {
-	for _, c := range checks {
-		s, ok := c()
+type prerequisite struct {
+	Message         string
+	PrerequisiteMet bool
+}
 
-		if !ok {
-			fmt.Println(s)
+func CheckPrerequisites(prereq ...*prerequisite) bool {
+	for _, p := range prereq {
+		if !p.PrerequisiteMet {
+			fmt.Println(p.Message)
 
 			return false
 		}
@@ -46,16 +50,45 @@ func CheckPrerequisites(checks ...func() (string, bool)) bool {
 	return true
 }
 
-func IsTokenValid() (string, bool) {
-	s := "Token is expired or not present. Please log in (again) with 'pleasant-cli login'."
+func IsTokenValid() *prerequisite {
 	b := time.Now().Unix() <= viper.GetInt64("bearertoken.expiresat")
-	return s, b
+
+	pr := &prerequisite{
+		Message:         "Token is expired or not present. Please log in (again) with 'pleasant-cli login'.",
+		PrerequisiteMet: b,
+	}
+
+	return pr
 }
 
-func IsServerUrlSet() (string, bool) {
-	s := "Server URL is not set. Please set it with 'pleasant-cli config serverurl <SERVER URL>'."
+func IsServerUrlSet() *prerequisite {
 	b := viper.IsSet("serverurl")
-	return s, b
+
+	pr := &prerequisite{
+		Message:         "Server URL is not set. Please set it with 'pleasant-cli config serverurl <SERVER URL>'.",
+		PrerequisiteMet: b,
+	}
+
+	return pr
+}
+
+func IsOneOfRequiredFlagsSet(cmd *cobra.Command, flags ...string) *prerequisite {
+	var count int
+
+	for _, f := range flags {
+		if cmd.Flags().Changed(f) {
+			count++
+		}
+	}
+
+	b := count > 0
+
+	pr := &prerequisite{
+		Message:         "At least one of the following flags must be set: " + strings.Join(flags, ", "),
+		PrerequisiteMet: b,
+	}
+
+	return pr
 }
 
 func StringPrompt(label string) string {

@@ -39,12 +39,7 @@ pleasant-cli get entry --path <path>
 pleasant-cli get entry --id <id> --password
 pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !cmd.Flags().Changed("path") && !cmd.Flags().Changed("id") {
-			fmt.Println("error: either --id or --path is required.")
-			return
-		}
-
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid(), pleasant.IsOneOfRequiredFlagsSet(cmd, "id", "path")) {
 			return
 		}
 

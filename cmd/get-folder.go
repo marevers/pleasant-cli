@@ -34,12 +34,7 @@ Examples:
 pleasant-cli get folder --id <id>
 pleasant-cli get folder --path <path>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !cmd.Flags().Changed("path") && !cmd.Flags().Changed("id") {
-			fmt.Println("error: either --id or --path is required.")
-			return
-		}
-
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid(), pleasant.IsOneOfRequiredFlagsSet(cmd, "id", "path")) {
 			return
 		}
 
