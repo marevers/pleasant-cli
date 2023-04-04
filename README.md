@@ -16,7 +16,8 @@ First, you need to set the server URL for the CLI to connect to.
 pleasant-cli config serverurl <SERVER URL>
 ```
 
-The server URL will be saved to the configuration file (default: `$HOME/.pleasant-cli.yaml`). If you want to use a different config path, you can add the flag `--config <PATH>` to any command.
+The server URL will be saved to the configuration file (default: `$HOME/.pleasant-cli.yaml`).
+If you want to use a different config path, add the flag `--config <PATH>` to all commands.
 
 Next, log into the Pleasant Password Server:
 
@@ -30,7 +31,8 @@ pleasant-cli login
 pleasant-cli login --username <USERNAME> --password <PASSWORD>
 ```
 
-This will retrieve an access token and save it to the configuration file for subsequent commands.
+This will retrieve an access token and save it to a file (default: `$HOME/.pleasant-token.yaml`) for subsequent commands.
+If you want to save/use the token in a different location, add the flag `--token <PATH>` to all commands.
 
 ## Commands
 
@@ -64,8 +66,35 @@ Flags:
       --config string   config file (default is $HOME/.pleasant-cli.yaml)
   -h, --help            help for pleasant-cli
   -t, --toggle          Help message for toggle
+      --token string    token file (default is $HOME/.pleasant-token.yaml)
+  -v, --version         version for pleasant-cli
 
 Use "pleasant-cli [command] --help" for more information about a command.
+```
+
+To view information on (sub)commands, append `--help` to any command.
+
+```
+$ pleasant-cli create entry --help
+
+Log into Pleasant Password Server with username and password.
+Username and password can either be entered interactively or by using flags.
+
+Examples:
+pleasant-cli login
+pleasant-cli login --username <USERNAME> --password <PASSWORD>
+
+Usage:
+  pleasant-cli login [flags]
+
+Flags:
+  -h, --help              help for login
+  -p, --password string   Password for Pleasant Password Server
+  -u, --username string   Username for Pleasant Password Server
+
+Global Flags:
+      --config string   config file (default is $HOME/.pleasant-cli.yaml)
+      --token string    token file (default is $HOME/.pleasant-token.yaml)
 ```
 
 ## License
