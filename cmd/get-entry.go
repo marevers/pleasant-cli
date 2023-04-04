@@ -30,8 +30,14 @@ var getEntryCmd = &cobra.Command{
 	Long: `Gets an entry from the Pleasant Password tree by its id or path.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Entry'.
 
-Example: pleasant-cli get entry --id <id>
-         pleasant-cli get entry --path <path>`,
+To get the password of an entry, use --password.
+To get the attachments of an entry, use --attachments.
+
+Examples:
+pleasant-cli get entry --id <id>
+pleasant-cli get entry --path <path>
+pleasant-cli get entry --id <id> --password
+pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !cmd.Flags().Changed("path") && !cmd.Flags().Changed("id") {
 			fmt.Println("error: either --id or --path is required.")
@@ -71,7 +77,15 @@ Example: pleasant-cli get entry --id <id>
 			identifier = id
 		}
 
-		entry, err := pleasant.GetJsonBody(baseUrl, pleasant.PathEntry+"/"+identifier, bearerToken)
+		subPath := pleasant.PathEntry + "/" + identifier
+
+		if cmd.Flags().Changed("password") {
+			subPath = subPath + "/password"
+		} else if cmd.Flags().Changed("attachments") {
+			subPath = subPath + "/attachments"
+		}
+
+		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -86,4 +100,8 @@ func init() {
 	getEntryCmd.Flags().StringP("path", "p", "", "Path to entry")
 	getEntryCmd.Flags().StringP("id", "i", "", "Id of entry")
 	getEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
+
+	getEntryCmd.Flags().Bool("password", false, "Get the password of the entry")
+	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
+	getEntryCmd.MarkFlagsMutuallyExclusive("password", "attachments")
 }

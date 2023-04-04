@@ -33,7 +33,9 @@ var loginCmd = &cobra.Command{
 	Long: `Log into Pleasant Password Server with username and password.
 Username and password can either be entered interactively or by using flags.
 
-Example with flags: pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
+Examples:
+pleasant-cli login
+pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var username string
 		var password string

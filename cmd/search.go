@@ -29,7 +29,8 @@ var searchCmd = &cobra.Command{
 	Short: "Search for entries and folders matching a query",
 	Long: `Search for entries and folders matching a query.
 	
-Example: pleasant-cli search --query 'MyTestEntry'`,
+Example:
+pleasant-cli search --query 'MyTestEntry'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
 			return

@@ -29,7 +29,8 @@ var getAccesslevelsCmd = &cobra.Command{
 	Short: "Gets a list of access levels",
 	Long: `Gets a list of access levels from Pleasant Password Server.
 	
-Example: pleasant-cli get accesslevels`,
+Example:
+pleasant-cli get accesslevels`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
 			return

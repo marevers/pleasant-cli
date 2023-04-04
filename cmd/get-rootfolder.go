@@ -29,7 +29,8 @@ var getRootfolderCmd = &cobra.Command{
 	Short: "Gets the id of the root folder",
 	Long: `Returns the id of the root folder in the Pleasant Password Server tree
 
-Example: pleasant-cli get rootfolder`,
+Example:
+pleasant-cli get rootfolder`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
 			return

@@ -30,8 +30,9 @@ var getFolderCmd = &cobra.Command{
 	Long: `Gets a folder and its entries by its id or path.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Folder3'.
 	
-Example: pleasant-cli get folder --id <id>
-         pleasant-cli get folder --path <path>`,
+Examples:
+pleasant-cli get folder --id <id>
+pleasant-cli get folder --path <path>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !cmd.Flags().Changed("path") && !cmd.Flags().Changed("id") {
 			fmt.Println("error: either --id or --path is required.")

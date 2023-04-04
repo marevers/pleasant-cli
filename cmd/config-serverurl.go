@@ -28,7 +28,8 @@ var serverurlCmd = &cobra.Command{
 	Short: "Sets the Pleasant Password server URL for pleasant-cli",
 	Long: `Sets the Pleasant Password server URL for pleasant-cli
 	
-Example: pleasant-cli config serverurl <SERVER URL>`,
+Example:
+pleasant-cli config serverurl <SERVER URL>`,
 	Args: cobra.MatchAll(cobra.MinimumNArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
 		viper.Set("serverurl", args[0])

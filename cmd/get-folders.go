@@ -30,7 +30,8 @@ var getFoldersCmd = &cobra.Command{
 	Long: `Gets the entire Pleasant Password tree.
 Warning: this command can take a while to complete.
 	
-Example: pleasant-cli get folders`,
+Example:
+pleasant-cli get folders`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet, pleasant.IsTokenValid) {
 			return
