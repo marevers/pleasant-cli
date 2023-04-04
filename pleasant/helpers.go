@@ -31,6 +31,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
+	"gopkg.in/yaml.v3"
 )
 
 type prerequisite struct {
@@ -124,6 +125,36 @@ func PasswordPrompt(label string) string {
 	}
 
 	return s
+}
+
+type TokenFile struct {
+	Token *Token `yaml:"bearertoken"`
+}
+
+type Token struct {
+	AccessToken string `yaml:"accesstoken"`
+	ExpiresAt   int64  `yaml:"expiresat"`
+}
+
+func WriteTokenFile(file, accessToken string, expiresAt int64) error {
+	t := &TokenFile{
+		Token: &Token{
+			AccessToken: accessToken,
+			ExpiresAt:   expiresAt,
+		},
+	}
+
+	b, err := yaml.Marshal(t)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(file, b, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func newHttpClient() *http.Client {

@@ -18,12 +18,14 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var tokenFile string
 
 // Pleasant-CLI version
 var version = "v0.0.1"
@@ -55,21 +57,16 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.pleasant-cli.yaml)")
+	rootCmd.PersistentFlags().StringVar(&tokenFile, "token", "", "token file (default is $HOME/.pleasant-token.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
-		// Use config file from the flag.
+		// Use config file from the flag
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
@@ -87,5 +84,27 @@ func initConfig() {
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Println(err)
+	}
+
+	// Use token file from the flag
+	if tokenFile != "" {
+		// Use token file from the flag
+		viper.AddConfigPath(tokenFile)
+		viper.SetConfigType("ÿaml")
+		viper.SetConfigName(filepath.Base(tokenFile))
+		viper.MergeInConfig()
+	} else {
+		// Find home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
+
+		// Search token file in home directory with name ".pleasant-token" (without extension).
+		viper.AddConfigPath(home)
+		viper.SetConfigType("yaml")
+		viper.SetConfigName(".pleasant-token")
+		viper.MergeInConfig()
+
+		// Set token file path
+		tokenFile = filepath.Join(home, ".pleasant-token.yaml")
 	}
 }

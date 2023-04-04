@@ -62,15 +62,13 @@ pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 		t := time.Now()
 		ea := t.Unix() + int64(bearerToken.ExpiresIn)
 
-		viper.Set("bearertoken.accesstoken", bearerToken.AccessToken)
-		viper.Set("bearertoken.expiresat", ea)
-
-		err = viper.WriteConfig()
+		err = pleasant.WriteTokenFile(tokenFile, bearerToken.AccessToken, ea)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 
-		fmt.Println("Successfully logged in. Token saved to:", viper.ConfigFileUsed(), ", valid until", time.Unix(ea, 0))
+		fmt.Println("Successfully logged in. Token saved to:", tokenFile, ", valid until", time.Unix(ea, 0))
 	},
 }
 
