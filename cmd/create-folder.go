@@ -29,8 +29,10 @@ var createFolderCmd = &cobra.Command{
 	Short: "Creates a folder",
 	Long: `Creates a folder in Pleasant Password Server. Takes a JSON string as input.
 Returns its id if succesful.
+'ParentId' can be omitted if the path of the entry is supplied.
 
-Example: pleasant-cli create folder --data '
+Examples:
+pleasant-cli create folder --data '
 {
     "CustomUserFields": {},
     "CustomApplicationFields": {},
@@ -39,6 +41,18 @@ Example: pleasant-cli create folder --data '
     "Tags": [],
     "Name": "TestFolder",
     "ParentId": "c04f874b-90f7-4b33-97d0-a92e011fb712",
+    "Notes": null,
+    "Expires": null
+}'
+
+pleasant-cli create folder --path 'Root/Folder1/TestFolder' --data '
+{
+    "CustomUserFields": {},
+    "CustomApplicationFields": {},
+    "Children": [],
+    "Credentials": [],
+    "Tags": [],
+    "Name": "TestFolder",
     "Notes": null,
     "Expires": null
 }'`,
@@ -56,6 +70,41 @@ Example: pleasant-cli create folder --data '
 			return
 		}
 
+		if cmd.Flags().Changed("path") {
+			resourcePath, err := cmd.Flags().GetString("path")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			input, err := pleasant.UnmarshalFolderInput(json)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			pid, err := pleasant.GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			if !pleasant.PathAndNameMatching(resourcePath, input.Name) {
+				fmt.Println("error: folder name from path and data do not match")
+				return
+			}
+
+			input.ParentId = pid
+
+			j, err := pleasant.MarshalFolderInput(input)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			json = j
+		}
+
 		id, err := pleasant.PostJsonString(baseUrl, pleasant.PathFolders, json, bearerToken)
 		if err != nil {
 			fmt.Println(err)
@@ -70,5 +119,6 @@ func init() {
 	createCmd.AddCommand(createFolderCmd)
 
 	createFolderCmd.Flags().StringP("data", "d", "", "JSON string with folder data")
+	createFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	createFolderCmd.MarkFlagRequired("data")
 }

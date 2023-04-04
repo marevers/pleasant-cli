@@ -227,6 +227,7 @@ type EntryInput struct {
 	Url                     string
 	Notes                   string
 	GroupId                 string
+	Expires                 string
 }
 
 func UnmarshalEntryInput(jsonString string) (*EntryInput, error) {
@@ -242,6 +243,38 @@ func UnmarshalEntryInput(jsonString string) (*EntryInput, error) {
 
 func MarshalEntryInput(entryInput *EntryInput) (string, error) {
 	b, err := json.Marshal(entryInput)
+	if err != nil {
+		return "", nil
+	}
+
+	return string(b), nil
+}
+
+type FolderInput struct {
+	CustomUserFields        map[string]string
+	CustomApplicationFields map[string]string
+	Children                []map[string]string
+	Credentials             []map[string]string
+	Tags                    []string
+	Name                    string
+	ParentId                string
+	Notes                   string
+	Expires                 string
+}
+
+func UnmarshalFolderInput(jsonString string) (*FolderInput, error) {
+	fi := &FolderInput{}
+
+	err := json.Unmarshal([]byte(jsonString), fi)
+	if err != nil {
+		return nil, err
+	}
+
+	return fi, nil
+}
+
+func MarshalFolderInput(folderInput *FolderInput) (string, error) {
+	b, err := json.Marshal(folderInput)
 	if err != nil {
 		return "", nil
 	}
