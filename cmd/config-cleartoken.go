@@ -29,7 +29,8 @@ var clearTokenCmd = &cobra.Command{
 	Long: `Removes the token file
 	
 Example:
-pleasant-cli config cleartoken`,
+pleasant-cli config cleartoken
+pleasant-cli config cleartoken --token <PATH>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := os.Remove(tokenFile)
 		if err != nil {

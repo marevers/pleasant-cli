@@ -127,6 +127,28 @@ func PasswordPrompt(label string) string {
 	return s
 }
 
+type ConfigFile struct {
+	ServerUrl string `yaml:"serverurl"`
+}
+
+func WriteConfigFile(file, serverUrl string) error {
+	t := &ConfigFile{
+		ServerUrl: serverUrl,
+	}
+
+	b, err := yaml.Marshal(t)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(file, b, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 type TokenFile struct {
 	Token *Token `yaml:"bearertoken"`
 }
@@ -178,10 +200,10 @@ func getRequest(baseUrl, path, bearerToken string) (*http.Response, error) {
 	client := newHttpClient()
 
 	res, err := client.Do(req)
-	if res.StatusCode != http.StatusOK {
-		return nil, generateError(res.StatusCode)
-	} else if err != nil {
+	if err != nil {
 		return nil, err
+	} else if res.StatusCode != http.StatusOK {
+		return nil, generateError(res.StatusCode)
 	}
 
 	return res, nil
@@ -211,10 +233,10 @@ func postRequestForm(baseUrl, path string, urlValues url.Values) (*http.Response
 	client := newHttpClient()
 
 	res, err := client.Do(req)
-	if res.StatusCode != http.StatusOK {
-		return nil, generateError(res.StatusCode)
-	} else if err != nil {
+	if err != nil {
 		return nil, err
+	} else if res.StatusCode != http.StatusOK {
+		return nil, generateError(res.StatusCode)
 	}
 
 	return res, nil
@@ -239,10 +261,10 @@ func postRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*http
 	client := newHttpClient()
 
 	res, err := client.Do(req)
-	if res.StatusCode != http.StatusOK {
-		return nil, generateError(res.StatusCode)
-	} else if err != nil {
+	if err != nil {
 		return nil, err
+	} else if res.StatusCode != http.StatusOK {
+		return nil, generateError(res.StatusCode)
 	}
 
 	return res, nil

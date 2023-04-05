@@ -18,8 +18,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // serverurlCmd represents the serverurl command
@@ -27,20 +27,19 @@ var serverurlCmd = &cobra.Command{
 	Use:   "serverurl",
 	Short: "Sets the Pleasant Password server URL for pleasant-cli",
 	Long: `Sets the Pleasant Password server URL for pleasant-cli
-	
+It must be specified as <PROTOCOL>://<URL>:<PORT>.
+
 Example:
 pleasant-cli config serverurl <SERVER URL>`,
 	Args: cobra.MatchAll(cobra.MinimumNArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
-		viper.Set("serverurl", args[0])
-
-		err := viper.WriteConfig()
+		err := pleasant.WriteConfigFile(cfgFile, args[0])
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Server URL saved to:", viper.ConfigFileUsed())
+		fmt.Println("Server URL saved to:", cfgFile)
 	},
 }
 

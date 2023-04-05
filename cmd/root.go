@@ -77,6 +77,9 @@ func initConfig() {
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".pleasant-cli")
+
+		// Set config file path
+		cfgFile = filepath.Join(home, ".pleasant-cli.yaml")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
