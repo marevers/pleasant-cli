@@ -6,11 +6,14 @@ It should work with any instance that supports API version 5 (`/api/v5/`).
 
 ## Installation
 
-TO DO
+Go to [Releases](https://github.com/marevers/pleasant-cli/releases) and download the latest release for your platform.
+
+Extract the archive to a location in your `$PATH`, e.g. on Ubuntu: `/usr/local/bin`.
 
 ## Getting started
 
 First, you need to set the server URL for the CLI to connect to.
+It must be specified as `<PROTOCOL>://<URL>:<PORT>`.
 
 ```
 pleasant-cli config serverurl <SERVER URL>
