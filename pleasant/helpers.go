@@ -127,10 +127,6 @@ func PasswordPrompt(label string) string {
 	return s
 }
 
-type ConfigFile struct {
-	ServerUrl string `yaml:"serverurl"`
-}
-
 func WriteConfigFile(file, serverUrl string) error {
 	t := &ConfigFile{
 		ServerUrl: serverUrl,
@@ -147,15 +143,6 @@ func WriteConfigFile(file, serverUrl string) error {
 	}
 
 	return nil
-}
-
-type TokenFile struct {
-	Token *Token `yaml:"bearertoken"`
-}
-
-type Token struct {
-	AccessToken string `yaml:"accesstoken"`
-	ExpiresAt   int64  `yaml:"expiresat"`
 }
 
 func WriteTokenFile(file, accessToken string, expiresAt int64) error {
@@ -270,30 +257,8 @@ func postRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*http
 	return res, nil
 }
 
-type SearchResponse struct {
-	Credentials []Credential
-	Groups      []Group
-}
-
-type Credential struct {
-	Id       string
-	Name     string
-	Username string
-	Url      string
-	Notes    string
-	Tags     []string
-	GroupId  string
-	Path     string
-}
-
-type Group struct {
-	Id       string
-	Name     string
-	FullPath string
-}
-
-func unmarshalSearchResponse(jsonString string) (*SearchResponse, error) {
-	sr := &SearchResponse{}
+func unmarshalSearchResponse(jsonString string) (*SearchOutput, error) {
+	sr := &SearchOutput{}
 
 	err := json.Unmarshal([]byte(jsonString), sr)
 	if err != nil {
@@ -301,19 +266,6 @@ func unmarshalSearchResponse(jsonString string) (*SearchResponse, error) {
 	}
 
 	return sr, nil
-}
-
-type EntryInput struct {
-	CustomUserFields        map[string]string
-	CustomApplicationFields map[string]string
-	Tags                    []string
-	Name                    string
-	Username                string
-	Password                string
-	Url                     string
-	Notes                   string
-	GroupId                 string
-	Expires                 string
 }
 
 func UnmarshalEntryInput(jsonString string) (*EntryInput, error) {
@@ -336,18 +288,6 @@ func MarshalEntryInput(entryInput *EntryInput) (string, error) {
 	return string(b), nil
 }
 
-type FolderInput struct {
-	CustomUserFields        map[string]string
-	CustomApplicationFields map[string]string
-	Children                []map[string]string
-	Credentials             []map[string]string
-	Tags                    []string
-	Name                    string
-	ParentId                string
-	Notes                   string
-	Expires                 string
-}
-
 func UnmarshalFolderInput(jsonString string) (*FolderInput, error) {
 	fi := &FolderInput{}
 
@@ -366,11 +306,6 @@ func MarshalFolderInput(folderInput *FolderInput) (string, error) {
 	}
 
 	return string(b), nil
-}
-
-type FolderOutput struct {
-	Credentials []Credential
-	Children    []Group
 }
 
 func UnmarshalFolderOutput(jsonString string) (*FolderOutput, error) {
