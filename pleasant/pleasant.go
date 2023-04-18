@@ -228,3 +228,28 @@ func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error)
 
 	return false, nil
 }
+
+func DuplicateFolderExists(baseUrl, jsonString, bearerToken string) (bool, error) {
+	input, err := UnmarshalFolderInput(jsonString)
+	if err != nil {
+		return false, err
+	}
+
+	folder, err := GetJsonBody(baseUrl, PathFolders+"/"+input.ParentId, bearerToken)
+	if err != nil {
+		return false, err
+	}
+
+	contents, err := UnmarshalFolderOutput(folder)
+	if err != nil {
+		return false, err
+	}
+
+	for _, folder := range contents.Children {
+		if folder.Name == input.Name {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

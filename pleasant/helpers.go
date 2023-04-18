@@ -370,6 +370,7 @@ func MarshalFolderInput(folderInput *FolderInput) (string, error) {
 
 type FolderOutput struct {
 	Credentials []Credential
+	Children    []Group
 }
 
 func UnmarshalFolderOutput(jsonString string) (*FolderOutput, error) {

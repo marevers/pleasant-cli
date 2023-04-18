@@ -105,6 +105,19 @@ pleasant-cli create folder --path 'Root/Folder1/TestFolder' --data '
 			json = j
 		}
 
+		if cmd.Flags().Changed("no-duplicates") {
+			exists, err := pleasant.DuplicateFolderExists(baseUrl, json, bearerToken)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			if exists {
+				fmt.Println(pleasant.ErrDuplicateFolder)
+				return
+			}
+		}
+
 		id, err := pleasant.PostJsonString(baseUrl, pleasant.PathFolders, json, bearerToken)
 		if err != nil {
 			fmt.Println(err)
@@ -121,4 +134,6 @@ func init() {
 	createFolderCmd.Flags().StringP("data", "d", "", "JSON string with folder data")
 	createFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	createFolderCmd.MarkFlagRequired("data")
+
+	createFolderCmd.Flags().Bool("no-duplicates", false, "Avoid creating duplicate folders")
 }
