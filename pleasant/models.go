@@ -1,3 +1,18 @@
+/*
+Copyright © 2023 Martijn Evers
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package pleasant
 
 type ConfigFile struct {
@@ -14,31 +29,31 @@ type Token struct {
 }
 
 type SearchOutput struct {
-	Credentials []Credential
-	Groups      []Group
+	Credentials []SearchEntry
+	Groups      []SearchGroup
 }
 
-type Credential struct {
+type SearchEntry struct {
 	Id       string
 	Name     string
 	Username string
 	Url      string
 	Notes    string
-	Tags     []string
+	Tags     string
 	GroupId  string
 	Path     string
 }
 
-type Group struct {
+type SearchGroup struct {
 	Id       string
 	Name     string
 	FullPath string
 }
 
-type EntryInput struct {
+type Entry struct {
 	CustomUserFields        map[string]string
 	CustomApplicationFields map[string]string
-	Tags                    []string
+	Tags                    []map[string]string
 	Name                    string
 	Username                string
 	Password                string
@@ -48,12 +63,12 @@ type EntryInput struct {
 	Expires                 string
 }
 
-type FolderInput struct {
+type Folder struct {
 	CustomUserFields        map[string]string
 	CustomApplicationFields map[string]string
 	Children                []map[string]string
 	Credentials             []map[string]string
-	Tags                    []string
+	Tags                    []map[string]string
 	Name                    string
 	ParentId                string
 	Notes                   string
@@ -61,6 +76,6 @@ type FolderInput struct {
 }
 
 type FolderOutput struct {
-	Credentials []Credential
-	Children    []Group
+	Credentials []Entry
+	Children    []Folder
 }

@@ -79,7 +79,7 @@ pleasant-cli create entry --path 'Root/Folder1/TestEntry' --data '
 				return
 			}
 
-			input, err := pleasant.UnmarshalEntryInput(json)
+			input, err := pleasant.UnmarshalEntry(json)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -98,7 +98,7 @@ pleasant-cli create entry --path 'Root/Folder1/TestEntry' --data '
 
 			input.GroupId = pid
 
-			j, err := pleasant.MarshalEntryInput(input)
+			j, err := pleasant.MarshalEntry(input)
 			if err != nil {
 				fmt.Println(err)
 				return

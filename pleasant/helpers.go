@@ -268,8 +268,8 @@ func unmarshalSearchResponse(jsonString string) (*SearchOutput, error) {
 	return sr, nil
 }
 
-func UnmarshalEntryInput(jsonString string) (*EntryInput, error) {
-	ei := &EntryInput{}
+func UnmarshalEntry(jsonString string) (*Entry, error) {
+	ei := &Entry{}
 
 	err := json.Unmarshal([]byte(jsonString), ei)
 	if err != nil {
@@ -279,8 +279,8 @@ func UnmarshalEntryInput(jsonString string) (*EntryInput, error) {
 	return ei, nil
 }
 
-func MarshalEntryInput(entryInput *EntryInput) (string, error) {
-	b, err := json.Marshal(entryInput)
+func MarshalEntry(entry *Entry) (string, error) {
+	b, err := json.Marshal(entry)
 	if err != nil {
 		return "", nil
 	}
@@ -288,8 +288,8 @@ func MarshalEntryInput(entryInput *EntryInput) (string, error) {
 	return string(b), nil
 }
 
-func UnmarshalFolderInput(jsonString string) (*FolderInput, error) {
-	fi := &FolderInput{}
+func UnmarshalFolder(jsonString string) (*Folder, error) {
+	fi := &Folder{}
 
 	err := json.Unmarshal([]byte(jsonString), fi)
 	if err != nil {
@@ -299,8 +299,8 @@ func UnmarshalFolderInput(jsonString string) (*FolderInput, error) {
 	return fi, nil
 }
 
-func MarshalFolderInput(folderInput *FolderInput) (string, error) {
-	b, err := json.Marshal(folderInput)
+func MarshalFolder(folder *Folder) (string, error) {
+	b, err := json.Marshal(folder)
 	if err != nil {
 		return "", nil
 	}

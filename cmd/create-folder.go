@@ -77,7 +77,7 @@ pleasant-cli create folder --path 'Root/Folder1/TestFolder' --data '
 				return
 			}
 
-			input, err := pleasant.UnmarshalFolderInput(json)
+			input, err := pleasant.UnmarshalFolder(json)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -96,7 +96,7 @@ pleasant-cli create folder --path 'Root/Folder1/TestFolder' --data '
 
 			input.ParentId = pid
 
-			j, err := pleasant.MarshalFolderInput(input)
+			j, err := pleasant.MarshalFolder(input)
 			if err != nil {
 				fmt.Println(err)
 				return

@@ -205,7 +205,7 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 }
 
 func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error) {
-	input, err := UnmarshalEntryInput(jsonString)
+	input, err := UnmarshalEntry(jsonString)
 	if err != nil {
 		return false, err
 	}
@@ -230,7 +230,7 @@ func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error)
 }
 
 func DuplicateFolderExists(baseUrl, jsonString, bearerToken string) (bool, error) {
-	input, err := UnmarshalFolderInput(jsonString)
+	input, err := UnmarshalFolder(jsonString)
 	if err != nil {
 		return false, err
 	}
