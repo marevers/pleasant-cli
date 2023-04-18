@@ -31,6 +31,7 @@ var (
 	ErrNoResult            = errors.New("error: no matching entries or folders")
 	ErrParentNotFound      = errors.New("error: parent folder not found")
 	ErrAmbiguousResult     = errors.New("error: ambiguous result, multiple matching entries or folders")
+	ErrDuplicateEntry      = errors.New("error: duplicate entry found, skipping creation")
 )
 
 func generateError(statusCode int) error {

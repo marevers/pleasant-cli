@@ -107,6 +107,19 @@ pleasant-cli create entry --path 'Root/Folder1/TestEntry' --data '
 			json = j
 		}
 
+		if cmd.Flags().Changed("no-duplicates") {
+			exists, err := pleasant.DuplicateEntryExists(baseUrl, json, bearerToken)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			if exists {
+				fmt.Println(pleasant.ErrDuplicateEntry)
+				return
+			}
+		}
+
 		id, err := pleasant.PostJsonString(baseUrl, pleasant.PathEntry, json, bearerToken)
 		if err != nil {
 			fmt.Println(err)
@@ -123,4 +136,6 @@ func init() {
 	createEntryCmd.Flags().StringP("data", "d", "", "JSON string with entry data")
 	createEntryCmd.Flags().StringP("path", "p", "", "Path to entry")
 	createEntryCmd.MarkFlagRequired("data")
+
+	createEntryCmd.Flags().Bool("no-duplicates", false, "Avoid creating duplicate entries")
 }

@@ -203,3 +203,28 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 
 	return id, nil
 }
+
+func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error) {
+	input, err := UnmarshalEntryInput(jsonString)
+	if err != nil {
+		return false, err
+	}
+
+	folder, err := GetJsonBody(baseUrl, PathFolders+"/"+input.GroupId, bearerToken)
+	if err != nil {
+		return false, err
+	}
+
+	contents, err := UnmarshalFolderOutput(folder)
+	if err != nil {
+		return false, err
+	}
+
+	for _, entry := range contents.Credentials {
+		if entry.Name == input.Name {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

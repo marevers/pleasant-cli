@@ -281,7 +281,7 @@ type Credential struct {
 	Username string
 	Url      string
 	Notes    string
-	Tags     string
+	Tags     []string
 	GroupId  string
 	Path     string
 }
@@ -366,6 +366,21 @@ func MarshalFolderInput(folderInput *FolderInput) (string, error) {
 	}
 
 	return string(b), nil
+}
+
+type FolderOutput struct {
+	Credentials []Credential
+}
+
+func UnmarshalFolderOutput(jsonString string) (*FolderOutput, error) {
+	fo := &FolderOutput{}
+
+	err := json.Unmarshal([]byte(jsonString), fo)
+	if err != nil {
+		return nil, err
+	}
+
+	return fo, nil
 }
 
 func PathAndNameMatching(resourcePath, name string) bool {
