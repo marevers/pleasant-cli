@@ -67,7 +67,13 @@ pleasant-cli get folder --path <path>`,
 			identifier = id
 		}
 
-		entry, err := pleasant.GetJsonBody(baseUrl, pleasant.PathFolders+"/"+identifier, bearerToken)
+		subPath := pleasant.PathFolders + "/" + identifier
+
+		if cmd.Flags().Changed("useraccess") {
+			subPath = subPath + "/useraccess"
+		}
+
+		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -82,4 +88,6 @@ func init() {
 	getFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	getFolderCmd.Flags().StringP("id", "i", "", "Id of folder")
 	getFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
+
+	getFolderCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
 }

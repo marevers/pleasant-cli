@@ -74,10 +74,13 @@ pleasant-cli get entry --path <path> --attachments`,
 
 		subPath := pleasant.PathEntry + "/" + identifier
 
-		if cmd.Flags().Changed("password") {
+		switch {
+		case cmd.Flags().Changed("password"):
 			subPath = subPath + "/password"
-		} else if cmd.Flags().Changed("attachments") {
+		case cmd.Flags().Changed("attachments"):
 			subPath = subPath + "/attachments"
+		case cmd.Flags().Changed("useraccess"):
+			subPath = subPath + "/useraccess"
 		}
 
 		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
@@ -98,5 +101,6 @@ func init() {
 
 	getEntryCmd.Flags().Bool("password", false, "Get the password of the entry")
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
-	getEntryCmd.MarkFlagsMutuallyExclusive("password", "attachments")
+	getEntryCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
+	getEntryCmd.MarkFlagsMutuallyExclusive("password", "attachments", "useraccess")
 }
