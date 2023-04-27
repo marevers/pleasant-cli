@@ -89,5 +89,5 @@ func init() {
 	getFolderCmd.Flags().StringP("id", "i", "", "Id of folder")
 	getFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
 
-	getFolderCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
+	getFolderCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the folder")
 }
