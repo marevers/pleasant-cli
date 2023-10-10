@@ -39,7 +39,7 @@ type SearchEntry struct {
 	Username string
 	Url      string
 	Notes    string
-	Tags     string
+	Tags     []any
 	GroupId  string
 	Path     string
 }
@@ -50,29 +50,30 @@ type SearchGroup struct {
 	FullPath string
 }
 
+type Tag struct {
+	Name string
+}
+
 type Entry struct {
-	CustomUserFields        map[string]string
-	CustomApplicationFields map[string]string
-	Tags                    []map[string]string
-	Name                    string
-	Username                string
-	Password                string
-	Url                     string
-	Notes                   string
-	GroupId                 string
-	Expires                 string
+	Tags     []Tag
+	Id       string
+	Name     string
+	Username string
+	Password string
+	Url      string
+	Notes    string
+	GroupId  string
+	Expires  string
 }
 
 type Folder struct {
-	CustomUserFields        map[string]string
-	CustomApplicationFields map[string]string
-	Children                []map[string]string
-	Credentials             []map[string]string
-	Tags                    []map[string]string
-	Name                    string
-	ParentId                string
-	Notes                   string
-	Expires                 string
+	Children []Entry
+	Tags     []Tag
+	Id       string
+	Name     string
+	ParentId string
+	Notes    string
+	Expires  string
 }
 
 type FolderOutput struct {
