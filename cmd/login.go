@@ -48,7 +48,7 @@ pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 			password = pleasant.PasswordPrompt("Enter password:")
 		}
 
-		fmt.Println("\nLogging in to Pleasant Password Server...")
+		fmt.Println("Logging in to Pleasant Password Server...")
 
 		bearerToken, err := pleasant.GetBearerToken(viper.GetString("serverUrl"), username, password)
 		if errors.Is(err, pleasant.ErrBadRequest) {
