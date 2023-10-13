@@ -57,6 +57,7 @@ Usage:
   pleasant-cli [command]
 
 Available Commands:
+  apply       Applies a configuration to entries or folders
   completion  Generate the autocompletion script for the specified shell
   config      Interact with pleasant-cli configuration
   create      Creates entries or folders

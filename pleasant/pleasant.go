@@ -92,6 +92,22 @@ func PostJsonString(baseUrl, path, jsonString, bearerToken string) (string, erro
 	return string(b), nil
 }
 
+func PatchJsonString(baseUrl, path, jsonString, bearerToken string) (string, error) {
+	res, err := patchRequestJsonString(baseUrl, path, jsonString, bearerToken)
+	if err != nil {
+		return "", err
+	}
+
+	defer res.Body.Close()
+
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+}
+
 func PostSearch(baseUrl, query, bearerToken string) (string, error) {
 	queryJson, err := json.Marshal(map[string]string{"Search": query})
 	if err != nil {
@@ -229,6 +245,31 @@ func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error)
 	return false, nil
 }
 
+func DuplicateEntryId(baseUrl, jsonString, bearerToken string) (string, error) {
+	input, err := UnmarshalEntry(jsonString)
+	if err != nil {
+		return "", err
+	}
+
+	folder, err := GetJsonBody(baseUrl, PathFolders+"/"+input.GroupId, bearerToken)
+	if err != nil {
+		return "", err
+	}
+
+	contents, err := UnmarshalFolderOutput(folder)
+	if err != nil {
+		return "", err
+	}
+
+	for _, entry := range contents.Credentials {
+		if entry.Name == input.Name {
+			return entry.Id, nil
+		}
+	}
+
+	return "", nil
+}
+
 func DuplicateFolderExists(baseUrl, jsonString, bearerToken string) (bool, error) {
 	input, err := UnmarshalFolder(jsonString)
 	if err != nil {
@@ -252,4 +293,29 @@ func DuplicateFolderExists(baseUrl, jsonString, bearerToken string) (bool, error
 	}
 
 	return false, nil
+}
+
+func DuplicateFolderId(baseUrl, jsonString, bearerToken string) (string, error) {
+	input, err := UnmarshalFolder(jsonString)
+	if err != nil {
+		return "", err
+	}
+
+	folder, err := GetJsonBody(baseUrl, PathFolders+"/"+input.ParentId, bearerToken)
+	if err != nil {
+		return "", err
+	}
+
+	contents, err := UnmarshalFolderOutput(folder)
+	if err != nil {
+		return "", err
+	}
+
+	for _, folder := range contents.Children {
+		if folder.Name == input.Name {
+			return folder.Id, nil
+		}
+	}
+
+	return "", nil
 }
