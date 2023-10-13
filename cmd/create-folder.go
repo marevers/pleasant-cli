@@ -29,7 +29,7 @@ var createFolderCmd = &cobra.Command{
 	Short: "Creates a folder",
 	Long: `Creates a folder in Pleasant Password Server. Takes a JSON string as input.
 Returns its id if succesful.
-'ParentId' can be omitted if the path of the entry is supplied.
+'ParentId' can be omitted if the path of the folder is supplied.
 
 Examples:
 pleasant-cli create folder --data '
