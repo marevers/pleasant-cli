@@ -28,7 +28,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
 	"gopkg.in/yaml.v3"
@@ -67,25 +66,6 @@ func IsServerUrlSet() *prerequisite {
 
 	pr := &prerequisite{
 		Message:         "Server URL is not set. Please set it with 'pleasant-cli config serverurl <SERVER URL>'.",
-		PrerequisiteMet: b,
-	}
-
-	return pr
-}
-
-func IsOneOfRequiredFlagsSet(cmd *cobra.Command, flags ...string) *prerequisite {
-	var count int
-
-	for _, f := range flags {
-		if cmd.Flags().Changed(f) {
-			count++
-		}
-	}
-
-	b := count > 0
-
-	pr := &prerequisite{
-		Message:         "At least one of the following flags must be set: " + strings.Join(flags, ", "),
 		PrerequisiteMet: b,
 	}
 

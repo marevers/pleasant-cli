@@ -34,7 +34,7 @@ Examples:
 pleasant-cli get folder --id <id>
 pleasant-cli get folder --path <path>`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid(), pleasant.IsOneOfRequiredFlagsSet(cmd, "id", "path")) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
 		}
 
@@ -88,6 +88,7 @@ func init() {
 	getFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	getFolderCmd.Flags().StringP("id", "i", "", "Id of folder")
 	getFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
+	getFolderCmd.MarkFlagsOneRequired("path", "id")
 
 	getFolderCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the folder")
 }

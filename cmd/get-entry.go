@@ -39,7 +39,7 @@ pleasant-cli get entry --path <path>
 pleasant-cli get entry --id <id> --password
 pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid(), pleasant.IsOneOfRequiredFlagsSet(cmd, "id", "path")) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
 		}
 
@@ -98,6 +98,7 @@ func init() {
 	getEntryCmd.Flags().StringP("path", "p", "", "Path to entry")
 	getEntryCmd.Flags().StringP("id", "i", "", "Id of entry")
 	getEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
+	getEntryCmd.MarkFlagsOneRequired("path", "id")
 
 	getEntryCmd.Flags().Bool("password", false, "Get the password of the entry")
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
