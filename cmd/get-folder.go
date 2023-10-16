@@ -76,12 +76,14 @@ pleasant-cli get folder --path <path>`,
 		folder, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(folder)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			fmt.Println(output)

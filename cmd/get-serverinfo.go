@@ -43,12 +43,14 @@ pleasant-cli get serverinfo`,
 		serverInfo, err := pleasant.GetJsonBody(baseUrl, pleasant.PathServerInfo, bearerToken)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(serverInfo)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			fmt.Println(output)

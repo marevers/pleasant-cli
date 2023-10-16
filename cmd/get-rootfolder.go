@@ -49,6 +49,7 @@ pleasant-cli get rootfolder`,
 			output, err := pleasant.PrettyPrintJson(rootFolderId)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			fmt.Println(output)

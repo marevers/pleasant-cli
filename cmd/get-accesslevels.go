@@ -49,6 +49,7 @@ pleasant-cli get accesslevels`,
 			output, err := pleasant.PrettyPrintJson(accesslevels)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			fmt.Println(output)

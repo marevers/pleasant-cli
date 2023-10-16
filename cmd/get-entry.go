@@ -86,12 +86,14 @@ pleasant-cli get entry --path <path> --attachments`,
 		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(entry)
 			if err != nil {
 				fmt.Println(err)
+				return
 			}
 
 			fmt.Println(output)
