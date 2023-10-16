@@ -28,6 +28,7 @@ const (
 	PathFolders      = "/api/v5/rest/folders"
 	PathAccessLevels = "/api/v5/rest/accesslevels"
 	PathSearch       = "/api/v5/rest/search"
+	PathServerInfo   = "/api/v5/rest/GetServerInfo"
 )
 
 type BearerToken struct {
@@ -94,6 +95,22 @@ func PostJsonString(baseUrl, path, jsonString, bearerToken string) (string, erro
 
 func PatchJsonString(baseUrl, path, jsonString, bearerToken string) (string, error) {
 	res, err := patchRequestJsonString(baseUrl, path, jsonString, bearerToken)
+	if err != nil {
+		return "", err
+	}
+
+	defer res.Body.Close()
+
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+}
+
+func DeleteJsonString(baseUrl, path, jsonString, bearerToken string) (string, error) {
+	res, err := deleteRequestJsonString(baseUrl, path, jsonString, bearerToken)
 	if err != nil {
 		return "", err
 	}

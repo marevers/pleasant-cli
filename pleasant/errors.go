@@ -33,6 +33,7 @@ var (
 	ErrAmbiguousResult     = errors.New("error: ambiguous result, multiple matching entries or folders")
 	ErrDuplicateEntry      = errors.New("error: duplicate entry found, skipping creation")
 	ErrDuplicateFolder     = errors.New("error: duplicate folder found, skipping creation")
+	ErrArchiveNotEnabled   = errors.New("error: archiving is possibly disabled or entry/folder does not exist")
 )
 
 func generateError(statusCode int) error {

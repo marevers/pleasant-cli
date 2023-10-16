@@ -264,6 +264,36 @@ func patchRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*htt
 	return res, nil
 }
 
+func deleteRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*http.Response, error) {
+	method := "DELETE"
+
+	payload := []byte(jsonString)
+
+	req, err := http.NewRequest(method, baseUrl+path, bytes.NewBuffer(payload))
+	if err != nil {
+		return nil, err
+	}
+
+	if bearerToken != "" {
+		req.Header.Add("Authorization", "Bearer "+bearerToken)
+	}
+
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	client := newHttpClient()
+
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	} else if res.StatusCode == 400 {
+		return nil, ErrArchiveNotEnabled
+	} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
+		return nil, generateError(res.StatusCode)
+	}
+
+	return res, nil
+}
+
 func unmarshalSearchResponse(jsonString string) (*SearchOutput, error) {
 	sr := &SearchOutput{}
 

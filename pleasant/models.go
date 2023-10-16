@@ -39,7 +39,6 @@ type SearchEntry struct {
 	Username string
 	Url      string
 	Notes    string
-	Tags     []any
 	GroupId  string
 	Path     string
 }
