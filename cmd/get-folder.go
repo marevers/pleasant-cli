@@ -73,12 +73,22 @@ pleasant-cli get folder --path <path>`,
 			subPath = subPath + "/useraccess"
 		}
 
-		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
+		folder, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
 			fmt.Println(err)
 		}
 
-		fmt.Println(entry)
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(folder)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
+		fmt.Println(folder)
 	},
 }
 

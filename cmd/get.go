@@ -31,4 +31,6 @@ var getCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(getCmd)
+
+	getCmd.PersistentFlags().Bool("pretty", false, "Pretty-prints the JSON output")
 }

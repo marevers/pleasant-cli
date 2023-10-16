@@ -45,6 +45,16 @@ pleasant-cli get serverinfo`,
 			fmt.Println(err)
 		}
 
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(serverInfo)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
 		fmt.Println(serverInfo)
 	},
 }

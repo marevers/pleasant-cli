@@ -356,6 +356,22 @@ func UnmarshalFolderOutput(jsonString string) (*FolderOutput, error) {
 	return fo, nil
 }
 
+func PrettyPrintJson(jsonString string) (string, error) {
+	var trgt interface{}
+
+	err := json.Unmarshal([]byte(jsonString), &trgt)
+	if err != nil {
+		return "", err
+	}
+
+	b, err := json.MarshalIndent(trgt, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+}
+
 func PathAndNameMatching(resourcePath, name string) bool {
 	s := strings.Split(resourcePath, "/")
 	return s[len(s)-1] == name

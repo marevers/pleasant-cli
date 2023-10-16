@@ -28,7 +28,7 @@ var getFoldersCmd = &cobra.Command{
 	Use:   "folders",
 	Short: "Gets the entire folder tree",
 	Long: `Gets the entire Pleasant Password tree.
-Warning: this command can take a while to complete.
+WARNING: this command can take a while to complete.
 	
 Example:
 pleasant-cli get folders`,
@@ -43,6 +43,16 @@ pleasant-cli get folders`,
 		folder, err := pleasant.GetJsonBody(baseUrl, pleasant.PathFolders, bearerToken)
 		if err != nil {
 			fmt.Println(err)
+			return
+		}
+
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(folder)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
 			return
 		}
 

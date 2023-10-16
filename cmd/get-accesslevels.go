@@ -45,6 +45,16 @@ pleasant-cli get accesslevels`,
 			return
 		}
 
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(accesslevels)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
 		fmt.Println(accesslevels)
 	},
 }

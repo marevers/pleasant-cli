@@ -45,6 +45,16 @@ pleasant-cli get rootfolder`,
 			return
 		}
 
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(rootFolderId)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
 		fmt.Println(rootFolderId)
 	},
 }

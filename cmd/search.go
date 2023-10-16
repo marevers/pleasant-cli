@@ -50,6 +50,16 @@ pleasant-cli search --query 'MyTestEntry'`,
 			fmt.Println(err)
 		}
 
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(result)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
 		fmt.Println(result)
 	},
 }
@@ -59,4 +69,6 @@ func init() {
 
 	searchCmd.Flags().StringP("query", "q", "", "Search query string")
 	searchCmd.MarkFlagRequired("query")
+
+	searchCmd.Flags().Bool("pretty", false, "Pretty-prints the JSON output")
 }

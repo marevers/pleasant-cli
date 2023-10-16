@@ -88,6 +88,16 @@ pleasant-cli get entry --path <path> --attachments`,
 			fmt.Println(err)
 		}
 
+		if cmd.Flags().Changed("pretty") {
+			output, err := pleasant.PrettyPrintJson(entry)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			fmt.Println(output)
+			return
+		}
+
 		fmt.Println(entry)
 	},
 }
