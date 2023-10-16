@@ -29,6 +29,7 @@ const (
 	PathAccessLevels = "/api/v5/rest/accesslevels"
 	PathSearch       = "/api/v5/rest/search"
 	PathServerInfo   = "/api/v5/rest/GetServerInfo"
+	PathPwStr        = "/api/v5/rest/passwordstrength"
 )
 
 type BearerToken struct {
