@@ -27,7 +27,9 @@ var serverurlCmd = &cobra.Command{
 	Use:   "serverurl",
 	Short: "Sets the Pleasant Password server URL for pleasant-cli",
 	Long: `Sets the Pleasant Password server URL for pleasant-cli
-It must be specified as <PROTOCOL>://<URL>:<PORT>.
+It must be specified as <PROTOCOL>://<URL>(:<PORT>).
+
+If the port is either 80 or 443, it can be inferred from the protocol and can be omitted.
 
 Example:
 pleasant-cli config serverurl <SERVER URL>`,
