@@ -89,7 +89,8 @@ pleasant-cli get entry --path <path> --attachments`,
 			return
 		}
 
-		if cmd.Flags().Changed("pretty") {
+		switch {
+		case cmd.Flags().Changed("pretty"):
 			output, err := pleasant.PrettyPrintJson(entry)
 			if err != nil {
 				fmt.Println(err)
@@ -98,9 +99,21 @@ pleasant-cli get entry --path <path> --attachments`,
 
 			fmt.Println(output)
 			return
-		}
+		case cmd.Flags().Changed("username"):
+			en, err := pleasant.UnmarshalEntry(entry)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 
-		fmt.Println(entry)
+			fmt.Println(en.Username)
+			return
+		case cmd.Flags().Changed("password"):
+			fmt.Println(pleasant.TrimDoubleQuotes(entry))
+			return
+		default:
+			fmt.Println(entry)
+		}
 	},
 }
 
@@ -112,8 +125,9 @@ func init() {
 	getEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	getEntryCmd.MarkFlagsOneRequired("path", "id")
 
+	getEntryCmd.Flags().Bool("username", false, "Get the username of the entry")
 	getEntryCmd.Flags().Bool("password", false, "Get the password of the entry")
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
 	getEntryCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
-	getEntryCmd.MarkFlagsMutuallyExclusive("password", "attachments", "useraccess")
+	getEntryCmd.MarkFlagsMutuallyExclusive("username", "password", "attachments", "useraccess")
 }

@@ -376,3 +376,11 @@ func PathAndNameMatching(resourcePath, name string) bool {
 	s := strings.Split(resourcePath, "/")
 	return s[len(s)-1] == name
 }
+
+func TrimDoubleQuotes(str string) string {
+	if strings.HasPrefix(str, `"`) && strings.HasSuffix(str, `"`) {
+		return str[1 : len(str)-1]
+	}
+
+	return str
+}
