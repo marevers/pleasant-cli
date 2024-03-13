@@ -28,7 +28,7 @@ var cfgFile string
 var tokenFile string
 
 // Pleasant-CLI version
-var version = "v0.3.1"
+var version = "v0.4.0"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -92,7 +92,7 @@ func initConfig() {
 	// Use token file from the flag
 	if tokenFile != "" {
 		// Use token file from the flag
-		viper.AddConfigPath(tokenFile)
+		viper.AddConfigPath(filepath.Dir(tokenFile))
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(filepath.Base(tokenFile))
 		viper.MergeInConfig()
