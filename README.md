@@ -61,7 +61,8 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   config      Interact with pleasant-cli configuration
   create      Creates entries or folders
-  get         Gets entries, folders or access levels
+  delete      Archives or deletes entries or folders or user access assignments for them
+  get         Gets entries, folders, access levels, server info or password strength
   help        Help about any command
   login       Log in to Pleasant Password Server
   search      Search for entries and folders matching a query

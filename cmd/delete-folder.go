@@ -26,10 +26,11 @@ import (
 // deleteFolderCmd represents the entry command
 var deleteFolderCmd = &cobra.Command{
 	Use:   "folder",
-	Short: "Archives or deletes a folder",
+	Short: "Archives or deletes a folder or a user access assignment for it",
 	Long: `Archives or deletes a folder from the Pleasant Password tree by its id or path.
 Anything contained in the folder is also archived/deleted.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Folder3'.
+Instead of the folder, a user access assignment can also be archived or deleted by appending --useraccess <accessrowid>.
 
 By default, the folder is archived. If it should be deleted, use --delete.
 WARNING: Deletion is permanent, use at your own risk.
@@ -37,7 +38,8 @@ WARNING: Deletion is permanent, use at your own risk.
 Examples:
 pleasant-cli delete folder --id <id>
 pleasant-cli delete folder --path <path>
-pleasant-cli delete folder --id <id> --delete`,
+pleasant-cli delete folder --id <id> --delete
+pleasant-cli delete folder --id <id> --delete --useraccess <accessrowid>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
@@ -84,13 +86,29 @@ pleasant-cli delete folder --id <id> --delete`,
 
 		subPath := pleasant.PathFolders + "/" + identifier
 
+		var msg string
+
+		if cmd.Flags().Changed("useraccess") {
+			ua, err := cmd.Flags().GetString("useraccess")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			subPath = subPath + "/useraccess/" + ua
+
+			msg = fmt.Sprintf("User access assignment %v deleted from folder %v", ua, identifier)
+		} else {
+			msg = fmt.Sprintf("Folder with id %v archived/deleted", identifier)
+		}
+
 		_, err := pleasant.DeleteJsonString(baseUrl, subPath, json, bearerToken)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Folder with id", identifier, "archived/deleted")
+		fmt.Println(msg)
 	},
 }
 
@@ -102,5 +120,6 @@ func init() {
 	deleteFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
 	deleteFolderCmd.MarkFlagsOneRequired("path", "id")
 
+	deleteFolderCmd.Flags().String("useraccess", "", "Archives/deletes the user access assignment with this id")
 	deleteFolderCmd.Flags().Bool("delete", false, "Deletes the folder instead of archiving")
 }

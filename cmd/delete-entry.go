@@ -26,17 +26,19 @@ import (
 // deleteEntryCmd represents the entry command
 var deleteEntryCmd = &cobra.Command{
 	Use:   "entry",
-	Short: "Archives or deletes an entry",
+	Short: "Archives or deletes an entry or a user access assignment for it",
 	Long: `Archives or deletes an entry from the Pleasant Password tree by its id or path.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Entry'.
+Instead of the entry, a user access assignment can also be archived or deleted by appending --useraccess <accessrowid>.
 
-By default, the entry is archived. If it should be deleted, use --delete.
+By default, the entry/user access assignment is archived. If it should be deleted, use --delete.
 WARNING: Deletion is permanent, use at your own risk.
 
 Examples:
 pleasant-cli delete entry --id <id>
 pleasant-cli delete entry --path <path>
-pleasant-cli delete entry --id <id> --delete`,
+pleasant-cli delete entry --id <id> --delete
+pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
 			return
@@ -83,13 +85,29 @@ pleasant-cli delete entry --id <id> --delete`,
 
 		subPath := pleasant.PathEntry + "/" + identifier
 
+		var msg string
+
+		if cmd.Flags().Changed("useraccess") {
+			ua, err := cmd.Flags().GetString("useraccess")
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			subPath = subPath + "/useraccess/" + ua
+
+			msg = fmt.Sprintf("User access assignment %v deleted from entry %v", ua, identifier)
+		} else {
+			msg = fmt.Sprintf("Entry with id %v archived/deleted", identifier)
+		}
+
 		_, err := pleasant.DeleteJsonString(baseUrl, subPath, json, bearerToken)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Entry with id", identifier, "archived/deleted")
+		fmt.Println(msg)
 	},
 }
 
@@ -101,5 +119,6 @@ func init() {
 	deleteEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	deleteEntryCmd.MarkFlagsOneRequired("path", "id")
 
+	deleteEntryCmd.Flags().String("useraccess", "", "Archives/deletes the user access assignment with this id")
 	deleteEntryCmd.Flags().Bool("delete", false, "Deletes the entry instead of archiving")
 }

@@ -22,8 +22,8 @@ import (
 // deleteCmd represents the create command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "Archives or deletes entries or folders",
-	Long:  `Archives or deletes entries or folders`,
+	Short: "Archives or deletes entries or folders or user access assignments for them",
+	Long:  `Archives or deletes entries or folders or user access assignments for them`,
 	Args:  cobra.MatchAll(cobra.MinimumNArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
 	},
