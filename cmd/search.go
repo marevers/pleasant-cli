@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // searchCmd represents the search command
@@ -36,8 +35,7 @@ pleasant-cli search --query 'MyTestEntry'`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		query, err := cmd.Flags().GetString("query")
 		if err != nil {

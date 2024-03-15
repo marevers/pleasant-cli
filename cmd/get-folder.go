@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // getFolderCmd represents the folder command
@@ -38,8 +37,7 @@ pleasant-cli get folder --path <path>`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		var identifier string
 

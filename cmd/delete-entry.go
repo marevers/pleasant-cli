@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // deleteEntryCmd represents the entry command
@@ -44,8 +43,7 @@ pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		var identifier string
 

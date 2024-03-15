@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // getServerInfoCmd represents the serverinfo command
@@ -37,8 +36,7 @@ pleasant-cli get serverinfo`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		serverInfo, err := pleasant.GetJsonBody(baseUrl, pleasant.PathServerInfo, bearerToken)
 		if err != nil {

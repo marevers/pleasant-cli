@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // patchEntryCmd represents the entry command
@@ -44,8 +43,7 @@ pleasant-cli patch entry --path 'Root/Folder1/TestEntry' --data '
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		json, err := cmd.Flags().GetString("data")
 		if err != nil {

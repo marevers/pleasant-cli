@@ -146,6 +146,10 @@ func WriteTokenFile(file, accessToken string, expiresAt int64) error {
 	return nil
 }
 
+func LoadConfig() (string, string) {
+	return viper.GetString("serverurl"), viper.GetString("bearertoken.accesstoken")
+}
+
 func newHttpClient() *http.Client {
 	return &http.Client{
 		Timeout: 20 * time.Second,

@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // getRootfolderCmd represents the rootfolder command
@@ -36,8 +35,7 @@ pleasant-cli get rootfolder`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		rootFolderId, err := pleasant.GetJsonBody(baseUrl, pleasant.PathRootFolder, bearerToken)
 		if err != nil {

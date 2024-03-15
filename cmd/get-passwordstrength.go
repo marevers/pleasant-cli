@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // getPasswordStrengthCmd represents the passwordstrength command
@@ -37,8 +36,7 @@ pleasant-cli get passwordstrength -p <PASSWORD>`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		pw, err := cmd.Flags().GetString("password")
 		if err != nil {

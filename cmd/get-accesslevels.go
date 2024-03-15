@@ -20,7 +20,6 @@ import (
 
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // getAccesslevelsCmd represents the accesslevels command
@@ -36,8 +35,7 @@ pleasant-cli get accesslevels`,
 			return
 		}
 
-		baseUrl := viper.GetString("serverurl")
-		bearerToken := viper.GetString("bearertoken.accesstoken")
+		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		accesslevels, err := pleasant.GetJsonBody(baseUrl, pleasant.PathAccessLevels, bearerToken)
 		if err != nil {
