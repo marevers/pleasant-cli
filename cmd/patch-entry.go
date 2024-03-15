@@ -28,6 +28,9 @@ var patchEntryCmd = &cobra.Command{
 	Short: "Partially updates an entry",
 	Long: `Applies a partial update to an entry in Pleasant Password Server. Takes a JSON string as input.
 
+To add a user access assignment to an entry, use --useraccess.
+You can find available PermissionSetIds by running 'pleasant-cli get accesslevels'.
+
 Examples:
 pleasant-cli patch entry --id <id> --data '
 {
@@ -37,6 +40,15 @@ pleasant-cli patch entry --id <id> --data '
 pleasant-cli patch entry --path 'Root/Folder1/TestEntry' --data '
 {
     "Password": "MyNewPassword01"
+}'
+
+pleasant-cli patch entry --path 'Root/Folder1/TestEntry' --useraccess --data '
+{
+	"UserId": "788017e9-0ee0-460e-8de4-abb5016f65c5",
+	"RoleId": "",
+	"ZoneId": "",
+	"PermissionSetId": "6fe3319c-21f0-48b0-a274-22fcca660de3",
+	"AccessExpiry": "2020-12-31"
 }'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
@@ -79,13 +91,29 @@ pleasant-cli patch entry --path 'Root/Folder1/TestEntry' --data '
 
 		subPath := pleasant.PathEntry + "/" + identifier
 
-		_, err = pleasant.PatchJsonString(baseUrl, subPath, json, bearerToken)
-		if err != nil {
-			fmt.Println(err)
-			return
+		var msg string
+
+		if cmd.Flags().Changed("useraccess") {
+			subPath = subPath + "/useraccess"
+
+			msg = fmt.Sprintf("User access assignment for entry %v added", identifier)
+
+			_, err := pleasant.PostJsonString(baseUrl, subPath, json, bearerToken)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else {
+			msg = fmt.Sprintf("Existing entry with id %v patched", identifier)
+
+			_, err = pleasant.PatchJsonString(baseUrl, subPath, json, bearerToken)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 		}
 
-		fmt.Println("Existing entry with id", identifier, "patched")
+		fmt.Println(msg)
 	},
 }
 
@@ -97,6 +125,8 @@ func init() {
 	patchEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	patchEntryCmd.MarkFlagsOneRequired("path", "id")
 
-	patchEntryCmd.Flags().StringP("data", "d", "", "JSON string with partial update")
+	patchEntryCmd.Flags().StringP("data", "d", "", "JSON string with partial update/user access assignment")
 	patchEntryCmd.MarkFlagRequired("data")
+
+	patchEntryCmd.Flags().Bool("useraccess", false, "Add user access assignment to the entry")
 }
