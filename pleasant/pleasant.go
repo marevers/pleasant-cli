@@ -175,14 +175,14 @@ func GetIdByResourcePath(baseUrl, resourcePath, resourceType, bearerToken string
 
 	if resourceType == "entry" {
 		for _, c := range j.Credentials {
-			if c.Path+resourceName == resourcePath {
+			if c.Path+resourceName == resourcePath && c.Name == resourceName {
 				count++
 				id = c.Id
 			}
 		}
 	} else if resourceType == "folder" {
 		for _, c := range j.Groups {
-			if strings.TrimSuffix(c.FullPath, "/") == resourcePath {
+			if strings.TrimSuffix(c.FullPath, "/") == resourcePath && c.Name == resourceName {
 				count++
 				id = c.Id
 			}
@@ -223,7 +223,7 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 	var id string
 
 	for _, c := range j.Groups {
-		if strings.TrimSuffix(c.FullPath, "/") == parentPath {
+		if strings.TrimSuffix(c.FullPath, "/") == parentPath && c.Name == parentName {
 			count++
 			id = c.Id
 		}
