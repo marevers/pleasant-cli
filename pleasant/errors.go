@@ -36,8 +36,12 @@ var (
 	ErrArchiveNotEnabled   = errors.New("error: entry/folder/accessrowid does not exist or archiving is possibly disabled")
 )
 
-func generateError(statusCode int) error {
-	switch statusCode {
+func generateError(res *http.Response) error {
+	defer res.Body.Close()
+
+	body, _ := decodeBody(res.Body)
+
+	switch res.StatusCode {
 	case http.StatusNotFound:
 		return ErrNotFound
 	case http.StatusBadRequest:
@@ -45,6 +49,6 @@ func generateError(statusCode int) error {
 	case http.StatusUnauthorized:
 		return ErrUnauthorized
 	default:
-		return fmt.Errorf("error: HTTP %v %v", statusCode, http.StatusText(statusCode))
+		return fmt.Errorf("error: HTTP %v %v: %v", res.StatusCode, http.StatusText(res.StatusCode), body)
 	}
 }

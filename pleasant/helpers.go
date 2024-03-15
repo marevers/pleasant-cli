@@ -174,7 +174,7 @@ func getRequest(baseUrl, path, bearerToken string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	} else if res.StatusCode != http.StatusOK {
-		return nil, generateError(res.StatusCode)
+		return nil, generateError(res)
 	}
 
 	return res, nil
@@ -187,6 +187,17 @@ func decodeJsonBody(body io.ReadCloser, target any) error {
 	}
 
 	return nil
+}
+
+func decodeBody(body io.ReadCloser) (string, error) {
+	buf := new(strings.Builder)
+
+	_, err := io.Copy(buf, body)
+	if err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 func postRequestForm(baseUrl, path string, urlValues url.Values) (*http.Response, error) {
@@ -207,7 +218,7 @@ func postRequestForm(baseUrl, path string, urlValues url.Values) (*http.Response
 	if err != nil {
 		return nil, err
 	} else if res.StatusCode != http.StatusOK {
-		return nil, generateError(res.StatusCode)
+		return nil, generateError(res)
 	}
 
 	return res, nil
@@ -235,7 +246,7 @@ func postRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*http
 	if err != nil {
 		return nil, err
 	} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
-		return nil, generateError(res.StatusCode)
+		return nil, generateError(res)
 	}
 	return res, nil
 }
@@ -262,7 +273,7 @@ func patchRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*htt
 	if err != nil {
 		return nil, err
 	} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
-		return nil, generateError(res.StatusCode)
+		return nil, generateError(res)
 	}
 
 	return res, nil
@@ -292,7 +303,7 @@ func deleteRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*ht
 	} else if res.StatusCode == 400 {
 		return nil, ErrArchiveNotEnabled
 	} else if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusNoContent {
-		return nil, generateError(res.StatusCode)
+		return nil, generateError(res)
 	}
 
 	return res, nil
