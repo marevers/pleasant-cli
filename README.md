@@ -65,6 +65,7 @@ Available Commands:
   get         Gets entries, folders, access levels, server info or password strength
   help        Help about any command
   login       Log in to Pleasant Password Server
+  patch       Partially updates entries or folders or adds user access assignments for them
   search      Search for entries and folders matching a query
 
 Flags:
