@@ -37,6 +37,10 @@ Examples:
 pleasant-cli login
 pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet()) {
+			return
+		}
+
 		var username string
 		var password string
 

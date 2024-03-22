@@ -24,6 +24,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -62,7 +64,7 @@ func IsTokenValid() *prerequisite {
 }
 
 func IsServerUrlSet() *prerequisite {
-	b := viper.IsSet("serverurl")
+	b := (viper.IsSet("serverurl") && viper.GetString("serverurl") != "")
 
 	pr := &prerequisite{
 		Message:         "Server URL is not set. Please set it with 'pleasant-cli config serverurl <SERVER URL>'.",
@@ -107,12 +109,27 @@ func PasswordPrompt(label string) string {
 	return s
 }
 
-func WriteConfigFile(file, serverUrl string) error {
-	t := &ConfigFile{
-		ServerUrl: serverUrl,
+func WriteConfigFile(file, key string, value string) error {
+	c := &ConfigFile{}
+
+	b, err := os.ReadFile(file)
+	if err == nil {
+		err = yaml.Unmarshal(b, c)
+		if err != nil {
+			return err
+		}
 	}
 
-	b, err := yaml.Marshal(t)
+	v := reflect.ValueOf(c).Elem()
+	fv := v.FieldByName(key)
+
+	if i, err := strconv.Atoi(value); err != nil {
+		fv.SetString(value)
+	} else {
+		fv.SetInt(int64(i))
+	}
+
+	b, err = yaml.Marshal(c)
 	if err != nil {
 		return err
 	}
@@ -150,9 +167,14 @@ func LoadConfig() (string, string) {
 	return viper.GetString("serverurl"), viper.GetString("bearertoken.accesstoken")
 }
 
-func newHttpClient() *http.Client {
+func newHttpClient(to int) *http.Client {
+	// Set timeout to 20 if no timeout is specified
+	if to == 0 {
+		to = 20
+	}
+
 	return &http.Client{
-		Timeout: 20 * time.Second,
+		Timeout: time.Duration(to) * time.Second,
 	}
 }
 
@@ -168,7 +190,9 @@ func getRequest(baseUrl, path, bearerToken string) (*http.Response, error) {
 		req.Header.Add("Authorization", "Bearer "+bearerToken)
 	}
 
-	client := newHttpClient()
+	to := viper.GetInt("timeout")
+
+	client := newHttpClient(to)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -212,7 +236,9 @@ func postRequestForm(baseUrl, path string, urlValues url.Values) (*http.Response
 
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	client := newHttpClient()
+	to := viper.GetInt("timeout")
+
+	client := newHttpClient(to)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -240,7 +266,9 @@ func postRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*http
 
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	client := newHttpClient()
+	to := viper.GetInt("timeout")
+
+	client := newHttpClient(to)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -267,7 +295,9 @@ func patchRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*htt
 
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	client := newHttpClient()
+	to := viper.GetInt("timeout")
+
+	client := newHttpClient(to)
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -295,7 +325,9 @@ func deleteRequestJsonString(baseUrl, path, jsonString, bearerToken string) (*ht
 
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	client := newHttpClient()
+	to := viper.GetInt("timeout")
+
+	client := newHttpClient(to)
 
 	res, err := client.Do(req)
 	if err != nil {

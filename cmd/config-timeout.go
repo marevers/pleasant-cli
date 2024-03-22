@@ -22,29 +22,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// serverurlCmd represents the serverurl command
-var serverurlCmd = &cobra.Command{
-	Use:   "serverurl",
-	Short: "Sets the Pleasant Password server URL for pleasant-cli",
-	Long: `Sets the Pleasant Password server URL for pleasant-cli
-It must be specified as <PROTOCOL>://<URL>(:<PORT>).
-
-If the port is either 80 or 443, it can be inferred from the protocol and can be omitted.
+// timeoutCmd represents the timeout command
+var timeoutCmd = &cobra.Command{
+	Use:   "timeout",
+	Short: "Sets the Pleasant Password server timeout for pleasant-cli",
+	Long: `Sets the Pleasant Password server timeout for pleasant-cli
+It is specified as seconds and the default value (when it is unconfigured / set to 0 in the config file) is 20 seconds.
 
 Example:
-pleasant-cli config serverurl <SERVER URL>`,
+pleasant-cli config timeout 30`,
 	Args: cobra.MatchAll(cobra.MinimumNArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
-		err := pleasant.WriteConfigFile(cfgFile, "ServerUrl", args[0])
+		err := pleasant.WriteConfigFile(cfgFile, "Timeout", args[0])
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Println("Server URL saved to:", cfgFile)
+		fmt.Println("Timeout saved to:", cfgFile)
 	},
 }
 
 func init() {
-	configCmd.AddCommand(serverurlCmd)
+	configCmd.AddCommand(timeoutCmd)
 }

@@ -17,6 +17,7 @@ package pleasant
 
 type ConfigFile struct {
 	ServerUrl string `yaml:"serverurl"`
+	Timeout   int    `yaml:"timeout"`
 }
 
 type TokenFile struct {
