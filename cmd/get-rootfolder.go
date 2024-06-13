@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -32,29 +30,26 @@ Example:
 pleasant-cli get rootfolder`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		rootFolderId, err := pleasant.GetJsonBody(baseUrl, pleasant.PathRootFolder, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(rootFolderId)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(output)
-			return
+			pleasant.Exit(output)
 		}
 
-		fmt.Println(rootFolderId)
+		pleasant.Exit(rootFolderId)
 	},
 }
 

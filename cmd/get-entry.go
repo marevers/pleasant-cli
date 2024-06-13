@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -39,7 +37,7 @@ pleasant-cli get entry --id <id> --password
 pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
@@ -49,22 +47,19 @@ pleasant-cli get entry --path <path> --attachments`,
 		if cmd.Flags().Changed("path") {
 			resourcePath, err := cmd.Flags().GetString("path")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			id, err := pleasant.GetIdByResourcePath(baseUrl, resourcePath, "entry", bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
 		} else {
 			id, err := cmd.Flags().GetString("id")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
@@ -83,34 +78,28 @@ pleasant-cli get entry --path <path> --attachments`,
 
 		entry, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		switch {
 		case cmd.Flags().Changed("pretty"):
 			output, err := pleasant.PrettyPrintJson(entry)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(output)
-			return
+			pleasant.Exit(output)
 		case cmd.Flags().Changed("username"):
 			en, err := pleasant.UnmarshalEntry(entry)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(en.Username)
-			return
+			pleasant.Exit(en.Username)
 		case cmd.Flags().Changed("password"):
-			fmt.Println(pleasant.TrimDoubleQuotes(entry))
-			return
+			pleasant.Exit(pleasant.TrimDoubleQuotes(entry))
 		default:
-			fmt.Println(entry)
+			pleasant.Exit(entry)
 		}
 	},
 }

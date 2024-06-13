@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -59,47 +57,41 @@ pleasant-cli create entry --path 'Root/Folder1/TestEntry' --data '
 }'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		json, err := cmd.Flags().GetString("data")
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		if cmd.Flags().Changed("path") {
 			resourcePath, err := cmd.Flags().GetString("path")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			input, err := pleasant.UnmarshalEntry(json)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			pid, err := pleasant.GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			if !pleasant.PathAndNameMatching(resourcePath, input.Name) {
-				fmt.Println("error: entry name from path and data do not match")
-				return
+				pleasant.ExitFatal("error: entry name from path and data do not match")
 			}
 
 			input.GroupId = pid
 
 			j, err := pleasant.MarshalEntry(input)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			json = j
@@ -108,23 +100,20 @@ pleasant-cli create entry --path 'Root/Folder1/TestEntry' --data '
 		if cmd.Flags().Changed("no-duplicates") {
 			exists, err := pleasant.DuplicateEntryExists(baseUrl, json, bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			if exists {
-				fmt.Println(pleasant.ErrDuplicateEntry)
-				return
+				pleasant.ExitFatal(pleasant.ErrDuplicateEntry)
 			}
 		}
 
 		id, err := pleasant.PostJsonString(baseUrl, pleasant.PathEntry, json, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
-		fmt.Println(id)
+		pleasant.Exit(id)
 	},
 }
 

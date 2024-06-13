@@ -22,6 +22,7 @@ import (
 )
 
 var (
+	ErrPrereqNotMet        = errors.New("error: not all prerequisites met")
 	ErrNotFound            = errors.New("error: the requested resource was not found")
 	ErrBadRequest          = errors.New("error: bad request")
 	ErrUnauthorized        = errors.New("error: unauthorized, please log in again")

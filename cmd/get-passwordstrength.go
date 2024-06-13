@@ -33,37 +33,33 @@ pleasant-cli get passwordstrength --password <PASSWORD>
 pleasant-cli get passwordstrength -p <PASSWORD>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		pw, err := cmd.Flags().GetString("password")
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		json := fmt.Sprintf(`{"Password":"%v"}`, pw)
 
 		pwStr, err := pleasant.PostJsonString(baseUrl, pleasant.PathPwStr, json, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(pwStr)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(output)
-			return
+			pleasant.Exit(output)
 		}
 
-		fmt.Println(pwStr)
+		pleasant.Exit(pwStr)
 	},
 }
 

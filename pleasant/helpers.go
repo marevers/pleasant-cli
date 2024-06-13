@@ -431,3 +431,13 @@ func TrimDoubleQuotes(str string) string {
 
 	return str
 }
+
+func Exit(msg ...any) {
+	fmt.Println(msg...)
+	os.Exit(0)
+}
+
+func ExitFatal(msg ...any) {
+	fmt.Println(msg...)
+	os.Exit(1)
+}

@@ -16,9 +16,9 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
 
@@ -34,11 +34,10 @@ pleasant-cli config cleartoken --token <PATH>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := os.Remove(tokenFile)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
-		fmt.Println("Token file deleted:", tokenFile)
+		pleasant.Exit("Token file deleted:", tokenFile)
 	},
 }
 

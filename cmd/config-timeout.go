@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -35,11 +33,10 @@ pleasant-cli config timeout 30`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := pleasant.WriteConfigFile(cfgFile, "Timeout", args[0])
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
-		fmt.Println("Timeout saved to:", cfgFile)
+		pleasant.Exit("Timeout saved to:", cfgFile)
 	},
 }
 

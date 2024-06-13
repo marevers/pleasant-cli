@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -32,29 +30,26 @@ Example:
 pleasant-cli get accesslevels`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		accesslevels, err := pleasant.GetJsonBody(baseUrl, pleasant.PathAccessLevels, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(accesslevels)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(output)
-			return
+			pleasant.Exit(output)
 		}
 
-		fmt.Println(accesslevels)
+		pleasant.Exit(accesslevels)
 	},
 }
 

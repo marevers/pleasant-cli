@@ -40,7 +40,7 @@ pleasant-cli delete entry --id <id> --delete
 pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
@@ -50,22 +50,19 @@ pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 		if cmd.Flags().Changed("path") {
 			resourcePath, err := cmd.Flags().GetString("path")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			id, err := pleasant.GetIdByResourcePath(baseUrl, resourcePath, "entry", bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
 		} else {
 			id, err := cmd.Flags().GetString("id")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
@@ -88,8 +85,7 @@ pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 		if cmd.Flags().Changed("useraccess") {
 			ua, err := cmd.Flags().GetString("useraccess")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			subPath = subPath + "/useraccess/" + ua
@@ -101,11 +97,10 @@ pleasant-cli delete entry --id <id> --delete --useraccess <accessrowid>`,
 
 		_, err := pleasant.DeleteJsonString(baseUrl, subPath, json, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
-		fmt.Println(msg)
+		pleasant.Exit(msg)
 	},
 }
 

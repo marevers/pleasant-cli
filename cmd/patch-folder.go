@@ -52,15 +52,14 @@ pleasant-cli patch folder --path 'Root/Folder1/TestFolder' --useraccess --data '
 }'`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
 
 		json, err := cmd.Flags().GetString("data")
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		var identifier string
@@ -68,22 +67,19 @@ pleasant-cli patch folder --path 'Root/Folder1/TestFolder' --useraccess --data '
 		if cmd.Flags().Changed("path") {
 			resourcePath, err := cmd.Flags().GetString("path")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			id, err := pleasant.GetIdByResourcePath(baseUrl, resourcePath, "folder", bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
 		} else {
 			id, err := cmd.Flags().GetString("id")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
@@ -100,20 +96,18 @@ pleasant-cli patch folder --path 'Root/Folder1/TestFolder' --useraccess --data '
 
 			_, err := pleasant.PostJsonString(baseUrl, subPath, json, bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 		} else {
 			msg = fmt.Sprintf("Existing folder with id %v patched", identifier)
 
 			_, err = pleasant.PatchJsonString(baseUrl, subPath, json, bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 		}
 
-		fmt.Println(msg)
+		pleasant.Exit(msg)
 	},
 }
 

@@ -38,7 +38,7 @@ pleasant-cli login
 pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		var username string
@@ -56,11 +56,9 @@ pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 
 		bearerToken, err := pleasant.GetBearerToken(viper.GetString("serverUrl"), username, password)
 		if errors.Is(err, pleasant.ErrBadRequest) {
-			fmt.Println(pleasant.ErrInvalidCredentials)
-			return
+			pleasant.ExitFatal(pleasant.ErrInvalidCredentials)
 		} else if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		t := time.Now()
@@ -68,11 +66,10 @@ pleasant-cli login --username <USERNAME> --password <PASSWORD>`,
 
 		err = pleasant.WriteTokenFile(tokenFile, bearerToken.AccessToken, ea)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
-		fmt.Println("Successfully logged in. Token saved to:", tokenFile, ", valid until", time.Unix(ea, 0))
+		pleasant.Exit("Successfully logged in. Token saved to:", tokenFile, ", valid until", time.Unix(ea, 0))
 	},
 }
 

@@ -16,8 +16,6 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/marevers/pleasant-cli/pleasant"
 	"github.com/spf13/cobra"
 )
@@ -34,7 +32,7 @@ pleasant-cli get folder --id <id>
 pleasant-cli get folder --path <path>`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
-			return
+			pleasant.ExitFatal(pleasant.ErrPrereqNotMet)
 		}
 
 		baseUrl, bearerToken := pleasant.LoadConfig()
@@ -44,22 +42,19 @@ pleasant-cli get folder --path <path>`,
 		if cmd.Flags().Changed("path") {
 			resourcePath, err := cmd.Flags().GetString("path")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			id, err := pleasant.GetIdByResourcePath(baseUrl, resourcePath, "folder", bearerToken)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
 		} else {
 			id, err := cmd.Flags().GetString("id")
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
 			identifier = id
@@ -73,22 +68,19 @@ pleasant-cli get folder --path <path>`,
 
 		folder, err := pleasant.GetJsonBody(baseUrl, subPath, bearerToken)
 		if err != nil {
-			fmt.Println(err)
-			return
+			pleasant.ExitFatal(err)
 		}
 
 		if cmd.Flags().Changed("pretty") {
 			output, err := pleasant.PrettyPrintJson(folder)
 			if err != nil {
-				fmt.Println(err)
-				return
+				pleasant.ExitFatal(err)
 			}
 
-			fmt.Println(output)
-			return
+			pleasant.Exit(output)
 		}
 
-		fmt.Println(folder)
+		pleasant.Exit(folder)
 	},
 }
 
