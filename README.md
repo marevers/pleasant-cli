@@ -103,6 +103,22 @@ Global Flags:
       --token string    token file (default is $HOME/.pleasant-token.yaml)
 ```
 
+## Docker image
+
+A minimal Alpine-based Docker image is provided here:
+
+**Latest version**
+
+```
+docker pull ghcr.io/marevers/pleasant-cli:latest
+```
+
+**Specific version**
+
+```
+docker pull ghcr.io/marevers/pleasant-cli:<version>
+```
+
 ## License
 
 Pleasant CLI is released under the Apache 2.0 license. See [LICENSE.txt](https://github.com/marevers/pleasant-cli/blob/master/LICENSE.txt)
