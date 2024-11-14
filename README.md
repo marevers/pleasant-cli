@@ -119,6 +119,14 @@ docker pull ghcr.io/marevers/pleasant-cli:latest
 docker pull ghcr.io/marevers/pleasant-cli:<version>
 ```
 
+## Roadmap
+
+**Clipboard support**
+
+I am planning to at some point add clipboard support, meaning, you will be able to run a `get` command and immediately store the response on the clipboard, for example to retrieve a password and immediately paste it into another program. 
+
+Currently I cannot implement this without breaking the CLI on any platform where the clipboard package wouldn't be available, but should that change then most likely it will be added.
+
 ## License
 
 Pleasant CLI is released under the Apache 2.0 license. See [LICENSE.txt](https://github.com/marevers/pleasant-cli/blob/master/LICENSE.txt)

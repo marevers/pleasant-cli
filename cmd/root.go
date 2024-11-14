@@ -28,7 +28,7 @@ var cfgFile string
 var tokenFile string
 
 // Pleasant-CLI version
-var version = "v0.8.0"
+var version = "v0.8.1"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
