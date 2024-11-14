@@ -35,27 +35,28 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type prerequisite struct {
+type Prerequisite struct {
 	Message         string
 	PrerequisiteMet bool
 }
 
-func CheckPrerequisites(prereq ...*prerequisite) bool {
+func CheckPrerequisites(prereq ...*Prerequisite) bool {
+	eCount := 0
+
 	for _, p := range prereq {
 		if !p.PrerequisiteMet {
 			fmt.Println(p.Message)
-
-			return false
+			eCount++
 		}
 	}
 
-	return true
+	return eCount <= 0
 }
 
-func IsTokenValid() *prerequisite {
+func IsTokenValid() *Prerequisite {
 	b := time.Now().Unix() <= viper.GetInt64("bearertoken.expiresat")
 
-	pr := &prerequisite{
+	pr := &Prerequisite{
 		Message:         "Token is expired or not present. Please log in (again) with 'pleasant-cli login'.",
 		PrerequisiteMet: b,
 	}
@@ -63,10 +64,10 @@ func IsTokenValid() *prerequisite {
 	return pr
 }
 
-func IsServerUrlSet() *prerequisite {
+func IsServerUrlSet() *Prerequisite {
 	b := (viper.IsSet("serverurl") && viper.GetString("serverurl") != "")
 
-	pr := &prerequisite{
+	pr := &Prerequisite{
 		Message:         "Server URL is not set. Please set it with 'pleasant-cli config serverurl <SERVER URL>'.",
 		PrerequisiteMet: b,
 	}
