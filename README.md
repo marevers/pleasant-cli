@@ -121,6 +121,22 @@ docker pull ghcr.io/marevers/pleasant-cli:<version>
 
 ## Build
 
+### Go
+
+To build with Go, you must have Go installed (version 1.23).
+
+```bash
+go build
+```
+
+This creates the `pleasant-cli` executable in the current location.
+
+It is also possible to run certain commands directly without first building. For example:
+
+```bash
+go run . get entry --id <id>
+``` 
+
 ### Nix
 
 To build the project as a *Nix flake* (ensure you have *Nix* installed with flakes enabled):
