@@ -22,3 +22,6 @@ go.work
 
 # Goreleaser
 dist/
+
+# Nix build output
+result
