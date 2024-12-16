@@ -119,6 +119,35 @@ docker pull ghcr.io/marevers/pleasant-cli:latest
 docker pull ghcr.io/marevers/pleasant-cli:<version>
 ```
 
+## Build
+
+### Nix
+
+To build the project as a *Nix flake* (ensure you have *Nix* installed with flakes enabled):
+```bash
+nix build
+```
+This creates a `result` symlink pointing to the built package in your *Nix* store.
+
+To run it directly:
+```bash
+nix run
+```
+
+To enter a development environment with all neccessary dependencies:
+```bash
+nix develop
+```
+
+To install it in your current profile:
+```bash
+nix profile install
+```
+
+As *Nix* uses hashes to ensure reproducibility between builds, you may need to update the vendor hash in `flake.nix` when Go dependencies change (for example after `go get -u`). To do so, run `nix build` as usual: this will fail giving the expected new hash that you can use to update the `vendorHash` variable in `flake.nix`. Once updated, the rebuild should work as expected.
+
+For more information about using flakes in *Nix* and *NixOS* environments please have a look at the [documentation](https://nixos.wiki/wiki/flakes).
+
 ## Roadmap
 
 **Clipboard support**
