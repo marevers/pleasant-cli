@@ -10,11 +10,21 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+
+        # Version extraction from source code
+        rootGoContent = builtins.readFile ./cmd/root.go;
+        versionMatch = builtins.match
+          ".*var version = \"([^\"]*)\".*" rootGoContent;
+        version =
+          if versionMatch == null
+          then throw "Version not found in cmd/root.go"
+          else builtins.head versionMatch;
+
       in
       {
         packages.default = pkgs.buildGoModule {
           pname = "pleasant-cli";
-          version = "0.8.1";
+          inherit version;
           src = ./.;
           vendorHash = "sha256-mRAlpDUg+2O/ShhxNVGGfK8YUJvWcR/ojossgZ7rCEY=";
         };
