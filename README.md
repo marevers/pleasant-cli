@@ -134,7 +134,7 @@ To run it directly:
 nix run
 ```
 
-To enter a development environment with all neccessary dependencies:
+To enter a development environment with all necessary dependencies:
 ```bash
 nix develop
 ```
@@ -144,7 +144,14 @@ To install it in your current profile:
 nix profile install
 ```
 
-As *Nix* uses hashes to ensure reproducibility between builds, you may need to update the vendor hash in `flake.nix` when Go dependencies change (for example after `go get -u`). To do so, run `nix build` as usual: this will fail giving the expected new hash that you can use to update the `vendorHash` variable in `flake.nix`. Once updated, the rebuild should work as expected.
+You may also want to update the locked dependencies in `flake.lock`:
+```bash
+nix flake update
+```
+
+As *Nix* uses hashes to ensure reproducibility between builds, you may need to update the vendor hash in `flake.nix` when Go dependencies change (for example after `go get -u`).
+
+To do so, run `nix build` as usual: this will fail giving the expected new hash that you can use to update the `vendorHash` variable in `flake.nix`. Once updated, the rebuild should work as expected.
 
 For more information about using flakes in *Nix* and *NixOS* environments please have a look at the [documentation](https://nixos.wiki/wiki/flakes).
 
