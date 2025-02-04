@@ -433,6 +433,10 @@ func TrimDoubleQuotes(str string) string {
 	return str
 }
 
+func Unescape(str string) string {
+	return strings.ReplaceAll(str, `\\`, `\`)
+}
+
 func Exit(msg ...any) {
 	fmt.Println(msg...)
 	os.Exit(0)

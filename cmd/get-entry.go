@@ -97,7 +97,7 @@ pleasant-cli get entry --path <path> --attachments`,
 
 			pleasant.Exit(en.Username)
 		case cmd.Flags().Changed("password"):
-			pleasant.Exit(pleasant.TrimDoubleQuotes(entry))
+			pleasant.Exit(pleasant.Unescape(pleasant.TrimDoubleQuotes(entry)))
 		default:
 			pleasant.Exit(entry)
 		}
