@@ -434,9 +434,8 @@ func TrimDoubleQuotes(str string) string {
 }
 
 func Unescape(str string) string {
-	str = strings.ReplaceAll(str, `\"`, `"`)
-	str = strings.ReplaceAll(str, `\\`, `\`)
-	return str
+	r := strings.NewReplacer(`\\`, `\`, `\"`, `"`)
+	return r.Replace(str)
 }
 
 func Exit(msg ...any) {
