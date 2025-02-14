@@ -171,6 +171,12 @@ To do so, run `nix build` as usual: this will fail giving the expected new hash 
 
 For more information about using flakes in *Nix* and *NixOS* environments please have a look at the [documentation](https://nixos.wiki/wiki/flakes).
 
+## Known issues / Limitations
+
+### Search functionality
+
+Having certain character combinations in an entry / folder name can stop the search function or any command using the search API like `get entry --path <path>` or `get folder --path <path>` from working. Currently the only known character combination is a hyphen surrounded by spaces, like in `My - Entry`. The search API call can then run into a timeout. This is a limitation of the Pleasant Password Server API. In order to fix it, remove the hyphen from the name of the entry or folder. This issue may or may not occur, based on the Pleasant Password Server version running.
+
 ## Roadmap
 
 **Clipboard support**
