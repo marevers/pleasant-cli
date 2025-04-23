@@ -5,7 +5,7 @@ toolchain go1.24.1
 
 require (
 	github.com/spf13/cobra v1.9.1
-	github.com/spf13/viper v1.20.0
+	github.com/spf13/viper v1.20.1
 	golang.org/x/term v0.31.0
 	gopkg.in/yaml.v3 v3.0.1
 )
