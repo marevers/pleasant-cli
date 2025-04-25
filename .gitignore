@@ -25,3 +25,6 @@ dist/
 
 # Nix build output
 result
+
+# Cobra completion debug output
+compdebug.txt

@@ -2,7 +2,6 @@ package pleasant
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/url"
 	"strings"
@@ -233,32 +232,48 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) 
 		return nil, ErrPathStartIncorrect
 	}
 
-	resourceName := splitPath[len(splitPath)-1]
-	if resourceName == "" {
-		return nil, ErrLastPathComp
-	}
-
-	result, err := PostSearch(baseUrl, resourceName, bearerToken)
-	if err != nil {
-		return nil, err
-	}
-
-	j, err := unmarshalSearchResponse(result)
-	if err != nil {
-		return nil, err
-	}
-
 	var paths []string
 
-	for _, c := range j.Credentials {
-		splitCredPath := strings.Split(c.Path, "/")
-		if strings.Contains(splitCredPath[len(splitCredPath)-1], resourceName) {
-			paths = append(paths, fmt.Sprintf("%s%s", c.Path, c.Name))
+	resourceName := splitPath[len(splitPath)-1]
+	if resourceName == "" {
+		id, err := GetIdByResourcePath(baseUrl, strings.TrimSuffix(resourcePath, "/"), "folder", bearerToken)
+		if err != nil {
+			return nil, err
 		}
-	}
 
-	for _, g := range j.Groups {
-		paths = append(paths, g.FullPath)
+		subPath := PathFolders + "/" + id
+
+		j, err := GetJsonBody(baseUrl, subPath, bearerToken)
+		if err != nil {
+			return nil, err
+		}
+
+		f, err := UnmarshalFolderOutput(j)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, c := range f.Credentials {
+			paths = append(paths, resourcePath+c.Name)
+		}
+	} else {
+		result, err := PostSearch(baseUrl, resourceName, bearerToken)
+		if err != nil {
+			return nil, err
+		}
+
+		s, err := unmarshalSearchResponse(result)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, c := range s.Credentials {
+			paths = append(paths, c.Path+c.Name)
+		}
+
+		for _, g := range s.Groups {
+			paths = append(paths, g.FullPath)
+		}
 	}
 
 	var validPaths []string
@@ -272,12 +287,12 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) 
 	return deduplicateStrSlice(validPaths), nil
 }
 
-func CompletePathFlag(toComplete string) []cobra.Completion {
+func CompletePathFlag(toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
 	baseUrl, bearerToken := LoadConfig()
 
 	paths, err := GetValidPaths(baseUrl, toComplete, bearerToken)
 	if err != nil {
-		return nil
+		return nil, cobra.ShellCompDirectiveError
 	}
 
 	completions := make([]cobra.Completion, len(paths))
@@ -285,7 +300,11 @@ func CompletePathFlag(toComplete string) []cobra.Completion {
 		completions[i] = cobra.Completion(p)
 	}
 
-	return completions
+	if len(completions) < 1 {
+		return nil, cobra.ShellCompDirectiveError
+	}
+
+	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
 }
 
 func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error) {
