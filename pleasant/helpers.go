@@ -410,6 +410,14 @@ func PathAndNameMatching(resourcePath, name string) bool {
 	return s[len(s)-1] == name
 }
 
+func parentPath(resourcePath string) string {
+	lastSlash := strings.LastIndex(resourcePath, "/")
+	if lastSlash == -1 {
+		return resourcePath
+	}
+	return resourcePath[:lastSlash]
+}
+
 func deduplicateStrSlice(strSlice []string) []string {
 	allKeys := make(map[string]bool)
 	list := []string{}

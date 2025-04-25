@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -233,62 +234,45 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) 
 	}
 
 	var paths []string
+	parentPath := parentPath(resourcePath)
+
+	id, err := GetIdByResourcePath(baseUrl, parentPath, "folder", bearerToken)
+	if err != nil {
+		return nil, err
+	}
+
+	subPath := PathFolders + "/" + id
+
+	j, err := GetJsonBody(baseUrl, subPath, bearerToken)
+	if err != nil {
+		return nil, err
+	}
+
+	fo, err := UnmarshalFolderOutput(j)
+	if err != nil {
+		return nil, err
+	}
 
 	resourceName := splitPath[len(splitPath)-1]
-	if resourceName == "" {
-		id, err := GetIdByResourcePath(baseUrl, strings.TrimSuffix(resourcePath, "/"), "folder", bearerToken)
-		if err != nil {
-			return nil, err
+	for _, c := range fo.Credentials {
+		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(c.Name, resourceName) {
+			// Skip credentials that don't contain the (partial) resource name
+			continue
 		}
-
-		subPath := PathFolders + "/" + id
-
-		j, err := GetJsonBody(baseUrl, subPath, bearerToken)
-		if err != nil {
-			return nil, err
-		}
-
-		fo, err := UnmarshalFolderOutput(j)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, c := range fo.Credentials {
-			paths = append(paths, resourcePath+c.Name)
-		}
-
-		for _, f := range fo.Children {
-			paths = append(paths, f.Name)
-		}
-	} else {
-		result, err := PostSearch(baseUrl, resourceName, bearerToken)
-		if err != nil {
-			return nil, err
-		}
-
-		s, err := unmarshalSearchResponse(result)
-		if err != nil {
-			return nil, err
-		}
-
-		for _, c := range s.Credentials {
-			paths = append(paths, c.Path+c.Name)
-		}
-
-		for _, g := range s.Groups {
-			paths = append(paths, g.FullPath)
-		}
+		paths = append(paths, parentPath+"/"+c.Name)
 	}
 
-	var validPaths []string
-
-	for _, p := range paths {
-		if strings.HasPrefix(p, resourcePath) {
-			validPaths = append(validPaths, p)
+	for _, f := range fo.Children {
+		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(f.Name, resourceName) {
+			// Skip folders that don't contain the (partial) resource name
+			continue
 		}
+		paths = append(paths, parentPath+"/"+f.Name)
 	}
 
-	return deduplicateStrSlice(validPaths), nil
+	slices.Sort(paths)
+
+	return deduplicateStrSlice(paths), nil
 }
 
 func CompletePathFlag(toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
