@@ -248,13 +248,17 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) 
 			return nil, err
 		}
 
-		f, err := UnmarshalFolderOutput(j)
+		fo, err := UnmarshalFolderOutput(j)
 		if err != nil {
 			return nil, err
 		}
 
-		for _, c := range f.Credentials {
+		for _, c := range fo.Credentials {
 			paths = append(paths, resourcePath+c.Name)
+		}
+
+		for _, f := range fo.Children {
+			paths = append(paths, f.Name)
 		}
 	} else {
 		result, err := PostSearch(baseUrl, resourceName, bearerToken)
