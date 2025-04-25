@@ -226,66 +226,72 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 	return id, nil
 }
 
-func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) {
+func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, []string, error) {
 	splitPath := strings.Split(resourcePath, "/")
 
 	if splitPath[0] != "Root" {
-		return nil, ErrPathStartIncorrect
+		return nil, nil, ErrPathStartIncorrect
 	}
 
-	var paths []string
 	parentPath := parentPath(resourcePath)
 
 	id, err := GetIdByResourcePath(baseUrl, parentPath, "folder", bearerToken)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	subPath := PathFolders + "/" + id
 
 	j, err := GetJsonBody(baseUrl, subPath, bearerToken)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	fo, err := UnmarshalFolderOutput(j)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	resourceName := splitPath[len(splitPath)-1]
+
+	entryPaths := []string{}
 	for _, c := range fo.Credentials {
 		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(c.Name, resourceName) {
 			// Skip credentials that don't contain the (partial) resource name
 			continue
 		}
-		paths = append(paths, parentPath+"/"+c.Name)
+		entryPaths = append(entryPaths, parentPath+"/"+c.Name)
 	}
 
+	folderPaths := []string{}
 	for _, f := range fo.Children {
 		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(f.Name, resourceName) {
 			// Skip folders that don't contain the (partial) resource name
 			continue
 		}
-		paths = append(paths, parentPath+"/"+f.Name)
+		folderPaths = append(folderPaths, parentPath+"/"+f.Name)
 	}
 
-	slices.Sort(paths)
+	slices.Sort(entryPaths)
+	slices.Sort(folderPaths)
 
-	return deduplicateStrSlice(paths), nil
+	return entryPaths, folderPaths, nil
 }
 
 func CompletePathFlag(toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
 	baseUrl, bearerToken := LoadConfig()
 
-	paths, err := GetValidPaths(baseUrl, toComplete, bearerToken)
+	ePaths, fPaths, err := GetValidPaths(baseUrl, toComplete, bearerToken)
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
 
-	completions := make([]cobra.Completion, len(paths))
-	for i, p := range paths {
-		completions[i] = cobra.Completion(p)
+	completions := make([]cobra.Completion, 0)
+	for _, fp := range fPaths {
+		completions = append(completions, cobra.CompletionWithDesc(fp, "folder"))
+	}
+	for _, ep := range ePaths {
+		completions = append(completions, cobra.CompletionWithDesc(ep, "entry"))
 	}
 
 	if len(completions) < 1 {
