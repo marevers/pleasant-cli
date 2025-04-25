@@ -226,14 +226,19 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 	return id, nil
 }
 
-func GetValidPaths(baseUrl, resourcePath, bearerToken string, resourceType string) ([]string, error) {
+func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, error) {
 	splitPath := strings.Split(resourcePath, "/")
 
 	if splitPath[0] != "Root" {
 		return nil, ErrPathStartIncorrect
 	}
 
-	result, err := PostSearch(baseUrl, resourcePath, bearerToken)
+	resourceName := splitPath[len(splitPath)-1]
+	if resourceName == "" {
+		return nil, ErrLastPathComp
+	}
+
+	result, err := PostSearch(baseUrl, resourceName, bearerToken)
 	if err != nil {
 		return nil, err
 	}
@@ -243,26 +248,34 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string, resourceType strin
 		return nil, err
 	}
 
+	var paths []string
+
+	for _, c := range j.Credentials {
+		splitCredPath := strings.Split(c.Path, "/")
+		if strings.Contains(splitCredPath[len(splitCredPath)-1], resourceName) {
+			paths = append(paths, fmt.Sprintf("%s%s", c.Path, c.Name))
+		}
+	}
+
+	for _, g := range j.Groups {
+		paths = append(paths, g.FullPath)
+	}
+
 	var validPaths []string
 
-	switch {
-	case resourceType == "entry":
-		for _, c := range j.Credentials {
-			validPaths = append(validPaths, fmt.Sprintf("%s%s", c.Path, c.Name))
-		}
-	case resourceType == "folder":
-		for _, g := range j.Groups {
-			validPaths = append(validPaths, g.FullPath)
+	for _, p := range paths {
+		if strings.HasPrefix(p, resourcePath) {
+			validPaths = append(validPaths, p)
 		}
 	}
 
 	return deduplicateStrSlice(validPaths), nil
 }
 
-func CompletePathFlag(toComplete string, resourceType string) []cobra.Completion {
+func CompletePathFlag(toComplete string) []cobra.Completion {
 	baseUrl, bearerToken := LoadConfig()
 
-	paths, err := GetValidPaths(baseUrl, toComplete, bearerToken, resourceType)
+	paths, err := GetValidPaths(baseUrl, toComplete, bearerToken)
 	if err != nil {
 		return nil
 	}

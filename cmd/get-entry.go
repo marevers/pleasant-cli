@@ -98,7 +98,7 @@ func init() {
 	getEntryCmd.MarkFlagsOneRequired("path", "id")
 
 	getEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
-		return pleasant.CompletePathFlag(toComplete, "entry"), cobra.ShellCompDirectiveDefault
+		return pleasant.CompletePathFlag(toComplete), cobra.ShellCompDirectiveKeepOrder
 	})
 
 	getEntryCmd.Flags().Bool("username", false, "Get the username of the entry")
