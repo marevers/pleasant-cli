@@ -273,7 +273,7 @@ func GetValidPaths(baseUrl, resourcePath string, completeAll bool, bearerToken s
 			// Skip folders that don't contain the (partial) resource name
 			continue
 		}
-		folderPaths = append(folderPaths, parentPath+"/"+f.Name)
+		folderPaths = append(folderPaths, parentPath+"/"+f.Name+"/")
 	}
 
 	slices.Sort(folderPaths)
