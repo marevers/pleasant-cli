@@ -257,7 +257,7 @@ func GetValidPaths(baseUrl, resourcePath string, completeAll bool, bearerToken s
 	entryPaths := []string{}
 	if completeAll {
 		for _, c := range fo.Credentials {
-			if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(c.Name, resourceName) {
+			if !strings.HasSuffix(resourcePath, "/") && !strings.HasPrefix(c.Name, resourceName) {
 				// Skip credentials that don't contain the (partial) resource name
 				continue
 			}
@@ -269,7 +269,7 @@ func GetValidPaths(baseUrl, resourcePath string, completeAll bool, bearerToken s
 
 	folderPaths := []string{}
 	for _, f := range fo.Children {
-		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(f.Name, resourceName) {
+		if !strings.HasSuffix(resourcePath, "/") && !strings.HasPrefix(f.Name, resourceName) {
 			// Skip folders that don't contain the (partial) resource name
 			continue
 		}
