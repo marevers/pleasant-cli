@@ -17,6 +17,7 @@ var (
 	ErrNoResult            = errors.New("error: no matching entries or folders")
 	ErrParentNotFound      = errors.New("error: parent folder not found")
 	ErrAmbiguousResult     = errors.New("error: ambiguous result, multiple matching entries or folders")
+	ErrLastPathComp        = errors.New("error: last path component is empty")
 	ErrDuplicateEntry      = errors.New("error: duplicate entry found, skipping creation")
 	ErrDuplicateFolder     = errors.New("error: duplicate folder found, skipping creation")
 	ErrArchiveNotEnabled   = errors.New("error: entry/folder/accessrowid does not exist or archiving is possibly disabled")

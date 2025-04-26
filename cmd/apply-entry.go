@@ -105,4 +105,8 @@ func init() {
 	applyEntryCmd.Flags().StringP("data", "d", "", "JSON string with entry data")
 	applyEntryCmd.Flags().StringP("path", "p", "", "Path to entry")
 	applyEntryCmd.MarkFlagRequired("data")
+
+	applyEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, true)
+	})
 }

@@ -410,6 +410,26 @@ func PathAndNameMatching(resourcePath, name string) bool {
 	return s[len(s)-1] == name
 }
 
+func parentPath(resourcePath string) string {
+	lastSlash := strings.LastIndex(resourcePath, "/")
+	if lastSlash == -1 {
+		return resourcePath
+	}
+	return resourcePath[:lastSlash]
+}
+
+func deduplicateStrSlice(strSlice []string) []string {
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
+}
+
 func TrimDoubleQuotes(str string) string {
 	if strings.HasPrefix(str, `"`) && strings.HasSuffix(str, `"`) {
 		return str[1 : len(str)-1]

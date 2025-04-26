@@ -104,6 +104,10 @@ func init() {
 	patchEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	patchEntryCmd.MarkFlagsOneRequired("path", "id")
 
+	patchEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, true)
+	})
+
 	patchEntryCmd.Flags().StringP("data", "d", "", "JSON string with partial update/user access assignment")
 	patchEntryCmd.MarkFlagRequired("data")
 

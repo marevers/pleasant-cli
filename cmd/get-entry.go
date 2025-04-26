@@ -97,6 +97,10 @@ func init() {
 	getEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	getEntryCmd.MarkFlagsOneRequired("path", "id")
 
+	getEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, true)
+	})
+
 	getEntryCmd.Flags().Bool("username", false, "Get the username of the entry")
 	getEntryCmd.Flags().Bool("password", false, "Get the password of the entry")
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")

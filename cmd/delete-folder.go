@@ -98,6 +98,10 @@ func init() {
 	deleteFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
 	deleteFolderCmd.MarkFlagsOneRequired("path", "id")
 
+	deleteFolderCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, false)
+	})
+
 	deleteFolderCmd.Flags().String("useraccess", "", "Archives/deletes the user access assignment with this id")
 	deleteFolderCmd.Flags().Bool("delete", false, "Deletes the folder instead of archiving")
 }
