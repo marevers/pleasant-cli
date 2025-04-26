@@ -226,7 +226,7 @@ func GetParentIdByResourcePath(baseUrl, resourcePath, bearerToken string) (strin
 	return id, nil
 }
 
-func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, []string, error) {
+func GetValidPaths(baseUrl, resourcePath string, completeAll bool, bearerToken string) ([]string, []string, error) {
 	splitPath := strings.Split(resourcePath, "/")
 
 	if splitPath[0] != "Root" {
@@ -255,12 +255,16 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, []strin
 	resourceName := splitPath[len(splitPath)-1]
 
 	entryPaths := []string{}
-	for _, c := range fo.Credentials {
-		if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(c.Name, resourceName) {
-			// Skip credentials that don't contain the (partial) resource name
-			continue
+	if completeAll {
+		for _, c := range fo.Credentials {
+			if !strings.HasSuffix(resourcePath, "/") && !strings.Contains(c.Name, resourceName) {
+				// Skip credentials that don't contain the (partial) resource name
+				continue
+			}
+			entryPaths = append(entryPaths, parentPath+"/"+c.Name)
 		}
-		entryPaths = append(entryPaths, parentPath+"/"+c.Name)
+
+		slices.Sort(entryPaths)
 	}
 
 	folderPaths := []string{}
@@ -272,16 +276,25 @@ func GetValidPaths(baseUrl, resourcePath, bearerToken string) ([]string, []strin
 		folderPaths = append(folderPaths, parentPath+"/"+f.Name)
 	}
 
-	slices.Sort(entryPaths)
 	slices.Sort(folderPaths)
 
 	return entryPaths, folderPaths, nil
 }
 
-func CompletePathFlag(toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+func CompletePathFlag(toComplete string, completeAll bool) ([]cobra.Completion, cobra.ShellCompDirective) {
+	if toComplete == "" || strings.HasPrefix("Root/", toComplete) {
+		return []cobra.Completion{
+			cobra.CompletionWithDesc("Root/", "folder"),
+		}, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
+	}
+
+	if !CheckPrerequisites(IsServerUrlSet(), IsTokenValid()) {
+		ExitFatal(ErrPrereqNotMet)
+	}
+
 	baseUrl, bearerToken := LoadConfig()
 
-	ePaths, fPaths, err := GetValidPaths(baseUrl, toComplete, bearerToken)
+	ePaths, fPaths, err := GetValidPaths(baseUrl, toComplete, completeAll, bearerToken)
 	if err != nil {
 		return nil, cobra.ShellCompDirectiveError
 	}
@@ -296,6 +309,11 @@ func CompletePathFlag(toComplete string) ([]cobra.Completion, cobra.ShellCompDir
 
 	if len(completions) < 1 {
 		return nil, cobra.ShellCompDirectiveError
+	}
+
+	// There are only entry completions, so we complete with a space
+	if len(fPaths) < 1 {
+		return completions, cobra.ShellCompDirectiveNoFileComp
 	}
 
 	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
