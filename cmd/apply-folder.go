@@ -103,4 +103,8 @@ func init() {
 	applyFolderCmd.Flags().StringP("data", "d", "", "JSON string with folder data")
 	applyFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	applyFolderCmd.MarkFlagRequired("data")
+
+	applyFolderCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, false)
+	})
 }

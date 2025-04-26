@@ -107,5 +107,9 @@ func init() {
 	createFolderCmd.Flags().StringP("path", "p", "", "Path to folder")
 	createFolderCmd.MarkFlagRequired("data")
 
+	createFolderCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, false)
+	})
+
 	createFolderCmd.Flags().Bool("no-duplicates", false, "Avoid creating duplicate folders")
 }

@@ -77,5 +77,9 @@ func init() {
 	getFolderCmd.MarkFlagsMutuallyExclusive("path", "id")
 	getFolderCmd.MarkFlagsOneRequired("path", "id")
 
+	getFolderCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, false)
+	})
+
 	getFolderCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the folder")
 }

@@ -109,5 +109,9 @@ func init() {
 	createEntryCmd.Flags().StringP("path", "p", "", "Path to entry")
 	createEntryCmd.MarkFlagRequired("data")
 
+	createEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, false)
+	})
+
 	createEntryCmd.Flags().Bool("no-duplicates", false, "Avoid creating duplicate entries")
 }

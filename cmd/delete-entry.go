@@ -97,6 +97,10 @@ func init() {
 	deleteEntryCmd.MarkFlagsMutuallyExclusive("path", "id")
 	deleteEntryCmd.MarkFlagsOneRequired("path", "id")
 
+	deleteEntryCmd.RegisterFlagCompletionFunc("path", func(cmd *cobra.Command, args []string, toComplete string) ([]cobra.Completion, cobra.ShellCompDirective) {
+		return pleasant.CompletePathFlag(toComplete, true)
+	})
+
 	deleteEntryCmd.Flags().String("useraccess", "", "Archives/deletes the user access assignment with this id")
 	deleteEntryCmd.Flags().Bool("delete", false, "Deletes the entry instead of archiving")
 }
