@@ -16,7 +16,7 @@ First, you need to set the server URL for the CLI to connect to.
 It must be specified as `<PROTOCOL>://<URL>:<PORT>`.
 
 ```
-pleasant-cli config serverurl <SERVER URL>
+$ pleasant-cli config serverurl <SERVER URL>
 ```
 
 The server URL will be saved to the configuration file (default: `$HOME/.pleasant-cli.yaml`).
@@ -25,13 +25,13 @@ If you want to use a different config path, add the flag `--config <PATH>` to al
 Next, log into the Pleasant Password Server:
 
 ```
-pleasant-cli login
+$ pleasant-cli login
 ```
 
 **Note**: this will perform an interactive login. You can also pass your credentials as flags.
 
 ```
-pleasant-cli login --username <USERNAME> --password <PASSWORD>
+$ pleasant-cli login --username <USERNAME> --password <PASSWORD>
 ```
 
 This will retrieve an access token and save it to a file (default: `$HOME/.pleasant-token.yaml`) for subsequent commands.
@@ -102,6 +102,69 @@ Global Flags:
       --config string   config file (default is $HOME/.pleasant-cli.yaml)
       --token string    token file (default is $HOME/.pleasant-token.yaml)
 ```
+
+## The --path flag
+
+### How does it work?
+
+Pleasant CLI provides a `--path` flag with many of the commands.
+This flag allows more human-friendly interaction with the API as it provides a path-based interaction with the server.
+
+For example, an entry can be retrieved by its path in the folder structure like such:
+
+```
+pleasant-cli get entry --path Root/Private\ Folders/MyUser/MyEntry
+```
+
+Note that certain characters must be escaped (like spaces) and valid paths must start with `Root/`.
+
+### Path autocompletion
+
+In order to make the server a bit more browseable without knowing paths in advance, the flag also supports autocompletion.
+
+There are three main cases of autocompletion behavior:
+
+1. Nothing typed yet
+   
+   Pleasant CLI autocompletes `Root/` immediately to get the path started.
+
+   Example:
+
+   ```
+   $ pleasant-cli get entry --path <TAB> <TAB>
+   pleasant-cli get entry --path Root/
+   ```
+   
+2. Path ends with anything but a slash
+
+   Pleasant CLI retrieves all matching entries and/or folders from the parent folder and looks for matching entries.
+
+   Example:
+
+   ```
+   $ pleasant-cli get entry --path Root/MyFolder/My <TAB> <TAB>
+   Root/MyFolder/MySubfolder/ --- folder
+   Root/MyFolder/MyEntry1     --- entry
+   Root/MyFolder/MyEntry2     --- entry
+   ```
+
+3. Paths ends with a slash
+
+   Pleasant CLI assumes the last past segment is a folder and retrieves all entries and/or folders from it.
+
+   Example:
+
+   ```
+   $ pleasant-cli get entry --path Root/MyFolder/ <TAB> <TAB>
+   Root/MyFolder/MySubfolder/   --- folder
+   Root/MyFolder/AnotherFolder/ --- folder
+   Root/MyFolder/MyEntry1       --- entry
+   Root/MyFolder/MyEntry2       --- entry
+   ```
+
+As cases 2 and 3 require a connection with the server to retrieve the available options, completion can take a while depending on how fast the server reacts.
+
+For `entry` commands, both entries and folders are returned. For `folder` commands, only folders are returned.`
 
 ## Docker image
 
