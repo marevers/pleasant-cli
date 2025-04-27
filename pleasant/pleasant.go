@@ -140,6 +140,10 @@ func GetIdByResourcePath(baseUrl, resourcePath, resourceType, bearerToken string
 		return "", ErrInvalidResourceType
 	}
 
+	if resourceType == "folder" {
+		resourcePath = strings.TrimSuffix(resourcePath, "/")
+	}
+
 	splitPath := strings.Split(resourcePath, "/")
 
 	if splitPath[0] != "Root" {
