@@ -282,7 +282,7 @@ func GetValidPaths(baseUrl, resourcePath string, completeAll bool, bearerToken s
 }
 
 func CompletePathFlag(toComplete string, completeAll bool) ([]cobra.Completion, cobra.ShellCompDirective) {
-	if toComplete == "" || strings.HasPrefix("Root/", toComplete) {
+	if toComplete == "" || strings.HasPrefix("Root", toComplete) {
 		return []cobra.Completion{
 			cobra.CompletionWithDesc("Root/", "folder"),
 		}, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
