@@ -80,8 +80,26 @@ pleasant-cli get entry --path <path> --attachments`,
 				pleasant.ExitFatal(err)
 			}
 
+			if cmd.Flags().Changed("clip") {
+				err := pleasant.CopyToClipboard(en.Username)
+				if err != nil {
+					pleasant.ExitFatal(err)
+				}
+
+				pleasant.Exit("Username copied to clipboard")
+			}
+
 			pleasant.Exit(en.Username)
 		case cmd.Flags().Changed("password"):
+			if cmd.Flags().Changed("clip") {
+				err := pleasant.CopyToClipboard(pleasant.Unescape(pleasant.TrimDoubleQuotes(entry)))
+				if err != nil {
+					pleasant.ExitFatal(err)
+				}
+
+				pleasant.Exit("Password copied to clipboard")
+			}
+
 			pleasant.Exit(pleasant.Unescape(pleasant.TrimDoubleQuotes(entry)))
 		default:
 			pleasant.Exit(entry)
@@ -106,4 +124,6 @@ func init() {
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
 	getEntryCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
 	getEntryCmd.MarkFlagsMutuallyExclusive("username", "password", "attachments", "useraccess")
+
+	getEntryCmd.Flags().Bool("clip", false, "Copy the output to the clipboard instead (username or password)")
 }
