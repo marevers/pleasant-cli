@@ -12,13 +12,18 @@ var getEntryCmd = &cobra.Command{
 	Long: `Gets an entry from the Pleasant Password tree by its id or path.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Entry'.
 
+To get the username of an entry, use --username.
 To get the password of an entry, use --password.
+For these two options, if you include the flag --clip, the output
+will be copied to your clipboard instead.
+
 To get the attachments of an entry, use --attachments.
 
 Examples:
 pleasant-cli get entry --id <id>
 pleasant-cli get entry --path <path>
-pleasant-cli get entry --id <id> --password
+pleasant-cli get entry --id <id> --username
+pleasant-cli get entry --id <id> --password --clip
 pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {

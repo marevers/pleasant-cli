@@ -166,6 +166,25 @@ As cases 2 and 3 require a connection with the server to retrieve the available 
 
 For `entry` commands, both entries and folders are returned. For `folder` commands, only folders are returned.`
 
+## Clipboard functionality
+
+If you are retrieving a username or password of an entry, it is possible to have Pleasant CLI copy the output directly to your clipboard. This is supported on the following platforms:
+
+- macOS
+- Windows
+- Linux - needs X11 dev package, install either `libx11-dev`, `xorg-dev` or `libX11-devel` to make it work
+
+It is NOT supported on:
+
+- WSL2
+
+Examples:
+
+```
+$ pleasant-cli get entry --path Root/MyFolder/MyEntry --username --clip
+$ pleasant-cli get entry --path Root/MyFolder/MyEntry --password --clip
+```
+
 ## Docker image
 
 A minimal Alpine-based Docker image is provided here:
