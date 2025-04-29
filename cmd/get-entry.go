@@ -12,13 +12,18 @@ var getEntryCmd = &cobra.Command{
 	Long: `Gets an entry from the Pleasant Password tree by its id or path.
 A path must be absolute and starts with 'Root/', e.g. 'Root/Folder1/Folder2/Entry'.
 
+To get the username of an entry, use --username.
 To get the password of an entry, use --password.
+For these two options, if you include the flag --clip, the output
+will be copied to your clipboard instead.
+
 To get the attachments of an entry, use --attachments.
 
 Examples:
 pleasant-cli get entry --id <id>
 pleasant-cli get entry --path <path>
-pleasant-cli get entry --id <id> --password
+pleasant-cli get entry --id <id> --username
+pleasant-cli get entry --id <id> --password --clip
 pleasant-cli get entry --path <path> --attachments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if !pleasant.CheckPrerequisites(pleasant.IsServerUrlSet(), pleasant.IsTokenValid()) {
@@ -80,8 +85,26 @@ pleasant-cli get entry --path <path> --attachments`,
 				pleasant.ExitFatal(err)
 			}
 
+			if cmd.Flags().Changed("clip") {
+				err := pleasant.CopyToClipboard(en.Username)
+				if err != nil {
+					pleasant.ExitFatal(err)
+				}
+
+				pleasant.Exit("Username copied to clipboard")
+			}
+
 			pleasant.Exit(en.Username)
 		case cmd.Flags().Changed("password"):
+			if cmd.Flags().Changed("clip") {
+				err := pleasant.CopyToClipboard(pleasant.Unescape(pleasant.TrimDoubleQuotes(entry)))
+				if err != nil {
+					pleasant.ExitFatal(err)
+				}
+
+				pleasant.Exit("Password copied to clipboard")
+			}
+
 			pleasant.Exit(pleasant.Unescape(pleasant.TrimDoubleQuotes(entry)))
 		default:
 			pleasant.Exit(entry)
@@ -106,4 +129,6 @@ func init() {
 	getEntryCmd.Flags().Bool("attachments", false, "Gets the attachments of the entry")
 	getEntryCmd.Flags().Bool("useraccess", false, "Gets the users that have access to the entry")
 	getEntryCmd.MarkFlagsMutuallyExclusive("username", "password", "attachments", "useraccess")
+
+	getEntryCmd.Flags().Bool("clip", false, "Copy the output to the clipboard instead (username or password)")
 }
