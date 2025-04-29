@@ -321,7 +321,7 @@ func CompletePathFlag(toComplete string, completeAll bool) ([]cobra.Completion, 
 		return completions, cobra.ShellCompDirectiveNoFileComp
 	}
 
-	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
+	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp | cobra.ShellCompDirectiveKeepOrder
 }
 
 func DuplicateEntryExists(baseUrl, jsonString, bearerToken string) (bool, error) {
