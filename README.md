@@ -261,11 +261,7 @@ Having certain character combinations in an entry / folder name can stop the sea
 
 ## Roadmap
 
-**Clipboard support**
-
-I am planning to at some point add clipboard support, meaning, you will be able to run a `get` command and immediately store the response on the clipboard, for example to retrieve a password and immediately paste it into another program. 
-
-Currently I cannot implement this without breaking the CLI on any platform where the clipboard package wouldn't be available, but should that change then most likely it will be added.
+Currently there are no specific planned features. Have a feature request? Please open an issue!
 
 ## License
 
