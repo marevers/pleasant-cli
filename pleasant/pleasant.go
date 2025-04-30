@@ -427,7 +427,7 @@ func DuplicateFolderId(baseUrl, jsonString, bearerToken string) (string, error) 
 func CopyToClipboard(text string) error {
 	err := clipboard.Init()
 	if err != nil {
-		return err
+		return ErrClipNotAvailable
 	}
 
 	clipboard.Write(clipboard.FmtText, []byte(text))

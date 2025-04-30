@@ -21,6 +21,7 @@ var (
 	ErrDuplicateEntry      = errors.New("error: duplicate entry found, skipping creation")
 	ErrDuplicateFolder     = errors.New("error: duplicate folder found, skipping creation")
 	ErrArchiveNotEnabled   = errors.New("error: entry/folder/accessrowid does not exist or archiving is possibly disabled")
+	ErrClipNotAvailable    = errors.New("error: failed to initialize clipboard, operating system/architecture not supported")
 )
 
 func generateError(res *http.Response) error {
