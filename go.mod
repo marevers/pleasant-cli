@@ -5,9 +5,9 @@ go 1.24
 toolchain go1.24.2
 
 require (
+	github.com/marevers/clipboard v0.0.0-20250430071815-d927118ca6c6
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.1
-	golang.design/x/clipboard v0.7.0
 	golang.org/x/term v0.31.0
 	gopkg.in/yaml.v3 v3.0.1
 )

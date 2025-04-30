@@ -7,8 +7,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/marevers/clipboard"
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 )
 
 const (
