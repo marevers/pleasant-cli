@@ -8,11 +8,11 @@ build-linux-windows:
 	docker build -f Dockerfile.build -t goreleaser-cross-x11 .
 	docker run --rm \
 	  -v "$$PWD:/app" -w /app goreleaser-cross-x11 \
-	  build --config .goreleaser.yaml --id linux --id windows --snapshot
+	  build --config .goreleaser.yaml --id linux --id windows
 
 # Build Mac versions natively (must be ran on a mac)
 build-mac:
-	  goreleaser build --config .goreleaser.yaml --id macos --snapshot
+	  goreleaser build --config .goreleaser.yaml --id macos
 
 release: clean build-linux build-native
 	goreleaser release --config .goreleaser.yml --skip=build
