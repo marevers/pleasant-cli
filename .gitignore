@@ -22,6 +22,8 @@ go.work
 
 # Goreleaser
 dist/
+dist-linux-win/
+dist-macos/
 
 # Nix build output
 result
