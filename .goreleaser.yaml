@@ -1,27 +1,63 @@
-# This is an example .goreleaser.yml file with some sensible defaults.
-# Make sure to check the documentation at https://goreleaser.com
+version: 2
+
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
+
 builds:
-  - env:
-      - >-
-        {{- if or (eq .Os "darwin") (eq .Os "linux") }}
-          CGO_ENABLED=1
-        {{- else }}
-          CGO_ENABLED=0
-        {{- end }}
+  - id: macos
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=1
+      # Cross compile settings are disabled as MacOS builds can currently only
+      # be built natively
+      # - >-
+      #   {{- if eq .Arch "amd64" }}CC=o64-clang
+      #   {{- else }}CC=oa64-clang
+      #   {{ end }}
+      # - >-
+      #   {{- if eq .Arch "amd64" }}CCX=o64-clang++
+      #   {{- else }}CCX=oa64-clang++
+      #   {{ end }}
+    flags:
+      - -trimpath
+
+  - id: linux
     goos:
       - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=1
+      - >-
+        {{- if eq .Arch "amd64" }}CC=x86_64-linux-gnu-gcc
+        {{- else }}CC=aarch64-linux-gnu-gcc
+        {{ end }}
+      - >-
+        {{- if eq .Arch "amd64" }}CCX=x86_64-linux-gnu-g++
+        {{- else }}CCX=aarch64-linux-gnu-g++
+        {{ end }}
+    flags:
+      - -trimpath
+
+  - id: windows
+    goos:
       - windows
-      - darwin
+    goarch:
+      - amd64
+      - 386
+    env:
+      - CGO_ENABLED=0
     flags:
       - -trimpath
 
 archives:
   - format: tar.gz
-    # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_
       {{- .Version }}_
@@ -30,22 +66,19 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    # use zip for windows archives
     format_overrides:
       - goos: windows
         format: zip
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
+
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
-
-# The lines beneath this are called `modelines`. See `:help modeline`
-# Feel free to remove those if you don't want/use them.
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-# vim: set ts=2 sw=2 tw=0 fo=cnqoj
