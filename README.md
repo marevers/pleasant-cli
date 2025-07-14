@@ -205,7 +205,7 @@ docker pull ghcr.io/marevers/pleasant-cli:<version>
 
 ### Go
 
-To build with Go, you must have Go installed (version 1.23).
+To build with Go, you must have Go installed (version 1.24).
 
 ```bash
 go build
@@ -217,7 +217,7 @@ It is also possible to run certain commands directly without first building. For
 
 ```bash
 go run . get entry --id <id>
-``` 
+```
 
 ### Nix
 
