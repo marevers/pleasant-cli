@@ -3,58 +3,13 @@ version: 2
 before:
   hooks:
     - go mod tidy
-
 builds:
-  - id: macos
-    goos:
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    env:
-      - CGO_ENABLED=1
-      # Cross compile settings are disabled as MacOS builds can currently only
-      # be built natively
-      # - >-
-      #   {{- if eq .Arch "amd64" }}CC=o64-clang
-      #   {{- else }}CC=oa64-clang
-      #   {{ end }}
-      # - >-
-      #   {{- if eq .Arch "amd64" }}CCX=o64-clang++
-      #   {{- else }}CCX=oa64-clang++
-      #   {{ end }}
-    flags:
-      - -trimpath
-
-  - id: linux
+  - env:
+      - CGO_ENABLED=0
     goos:
       - linux
-    goarch:
-      - amd64
-      - arm64
-    env:
-      - CGO_ENABLED=1
-      - >-
-        {{- if eq .Arch "amd64" }}CC=x86_64-linux-gnu-gcc
-        {{- else }}CC=aarch64-linux-gnu-gcc
-        {{ end }}
-      - >-
-        {{- if eq .Arch "amd64" }}CCX=x86_64-linux-gnu-g++
-        {{- else }}CCX=aarch64-linux-gnu-g++
-        {{ end }}
-    flags:
-      - -trimpath
-
-  - id: windows
-    goos:
       - windows
-    goarch:
-      - amd64
-      - 386
-    env:
-      - CGO_ENABLED=0
-    flags:
-      - -trimpath
+      - darwin
 
 archives:
   - format: tar.gz
@@ -69,13 +24,10 @@ archives:
     format_overrides:
       - goos: windows
         format: zip
-
 checksum:
   name_template: 'checksums.txt'
-
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
-
 changelog:
   sort: asc
   filters:
