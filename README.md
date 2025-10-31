@@ -168,21 +168,17 @@ For `entry` commands, both entries and folders are returned. For `folder` comman
 
 ## Clipboard functionality
 
-If you are retrieving a username or password of an entry, it is possible to have Pleasant CLI copy the output directly to your clipboard. This is supported on the following platforms:
+I've made the decision to remove this functionality from Pleasant CLI. As the integration requires CGO, creating a reliable build process for all OS types and architectures proved very difficult (mostly driven by MacOS). In order to keep this project maintainable, it was removed.
 
-- macOS
-- Windows
-- Linux - needs X11 dev package, install either `libx11-dev`, `xorg-dev` or `libX11-devel` to make it work
+If you still want the same functionality, I would recommend using a separate CLI command and pipe the output of any Pleasant CLI command into it. Here are a few examples:
 
-It is NOT supported on:
+- [gclip](https://github.com/golang-design/clipboard)
+- [gocopy](https://github.com/atotto/clipboard)
 
-- WSL2
+Example (with `gocopy`):
 
-Examples:
-
-```
-$ pleasant-cli get entry --path Root/MyFolder/MyEntry --username --clip
-$ pleasant-cli get entry --path Root/MyFolder/MyEntry --password --clip
+```bash
+$ pleasant-cli get entry --path Root/MyFolder/MyEntry --password | gocopy
 ```
 
 ## Docker image

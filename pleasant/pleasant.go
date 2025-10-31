@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"golang.design/x/clipboard"
 )
 
 const (
@@ -422,15 +421,4 @@ func DuplicateFolderId(baseUrl, jsonString, bearerToken string) (string, error) 
 	}
 
 	return "", nil
-}
-
-func CopyToClipboard(text string) error {
-	err := clipboard.Init()
-	if err != nil {
-		return err
-	}
-
-	clipboard.Write(clipboard.FmtText, []byte(text))
-
-	return nil
 }
