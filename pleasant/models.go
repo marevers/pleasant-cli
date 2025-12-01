@@ -40,25 +40,25 @@ type Tag struct {
 }
 
 type Entry struct {
-	Tags     []Tag
-	Id       string
-	Name     string
-	Username string
-	Password string
-	Url      string
-	Notes    string
-	GroupId  string
-	Expires  string
+	Tags     []Tag  `json:"Tags,omitempty"`
+	Id       string `json:"Id,omitempty"`
+	Name     string `json:"Name,omitempty"`
+	Username string `json:"Username,omitempty"`
+	Password string `json:"Password,omitempty"`
+	Url      string `json:"Url,omitempty"`
+	Notes    string `json:"Notes,omitempty"`
+	GroupId  string `json:"GroupId,omitempty"`
+	Expires  string `json:"Expires,omitempty"`
 }
 
 type Folder struct {
-	Children []Entry
-	Tags     []Tag
-	Id       string
-	Name     string
-	ParentId string
-	Notes    string
-	Expires  string
+	Children []Entry `json:"Children,omitempty"`
+	Tags     []Tag   `json:"Tags,omitempty"`
+	Id       string  `json:"Id,omitempty"`
+	Name     string  `json:"Name,omitempty"`
+	ParentId string  `json:"ParentId,omitempty"`
+	Notes    string  `json:"Notes,omitempty"`
+	Expires  string  `json:"Expires,omitempty"`
 }
 
 type FolderOutput struct {
